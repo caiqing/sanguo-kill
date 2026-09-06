@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>三国杀 · 群雄逐鹿</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ============ 标题画面 ============ -->
+<section id="screen-title" class="screen active">
+  <div class="title-deco-corner tl"></div><div class="title-deco-corner tr"></div>
+  <div class="title-wrap">
+    <div class="seal">漢</div>
+    <h1 class="game-title">三國殺</h1>
+    <p class="subtitle">—— 群雄逐鹿 · 身份暗战 ——</p>
+    <p class="intro-text">东汉末年，朝纲崩坏，黄巾蜂起，群雄并起于四方。<br>
+    谁是忠肝义胆，谁是笑里藏刀？<br>
+    乱世之中，唯有刀剑与谋略，方能定鼎天下。</p>
+    <button id="btn-start" class="btn-main">入　局</button>
+    <div id="stats-line" class="stats-line">乱世将启 · 静候新主</div>
+    <div class="title-suits">♠　♥　♣　♦</div>
+  </div>
+</section>
+
+<!-- ============ 选将画面 ============ -->
+<section id="screen-hero" class="screen">
+  <h2 class="screen-title">选 择 武 将</h2>
+  <p class="screen-tip">每位武将各怀绝技，选择你的名将，征战乱世</p>
+  <details id="rules-panel">
+    <summary>玩法说明</summary>
+    <div class="rules-body" id="rules-body"></div>
+  </details>
+  <div id="hero-grid"></div>
+  <div class="role-pick-row">
+    <span class="role-pick-label">身份：</span>
+    <div id="role-options"></div>
+  </div>
+  <button id="btn-hero-confirm" class="btn-main" disabled>开 始 征 战</button>
+</section>
+
+<!-- ============ 剧情画面 ============ -->
+<section id="screen-story" class="screen">
+  <div id="story-role-card"></div>
+  <div id="story-text"></div>
+  <button id="btn-story-go" class="btn-main hidden">开始征战</button>
+</section>
+
+<!-- ============ 游戏画面 ============ -->
+<section id="screen-game" class="screen">
+  <div id="game">
+    <header id="top-bar">
+      <div id="round-info">第 1 轮</div>
+      <div id="turn-banner">——</div>
+      <div id="deck-info">牌堆 <b id="deck-count">0</b> 张</div>
+      <button id="btn-rules" title="玩法说明">?</button>
+      <button id="btn-mute" title="音效开关">🔊</button>
+    </header>
+    <div id="others-row"></div>
+    <div id="center-stage">
+      <div id="phase-banner"></div>
+      <div id="play-zone"></div>
+      <div id="deck-pile" title="牌堆"></div>
+      <div id="discard-pile" title="弃牌堆"></div>
+    </div>
+    <div id="self-area">
+      <div id="self-hero"></div>
+      <div id="hand-wrap"><div id="hand-cards"></div></div>
+      <div id="action-col">
+        <div id="hint-text">等待开局……</div>
+        <div id="skill-btns"></div>
+        <div id="action-btns">
+          <button id="btn-use" class="btn-main hidden">出　牌</button>
+          <button id="btn-cancel" class="hidden">取　消</button>
+          <button id="btn-endturn" disabled>结束回合</button>
+        </div>
+      </div>
+    </div>
+    <aside id="log-panel">
+      <div class="log-title">— 战报 —</div>
+      <div id="log-list"></div>
+    </aside>
+    <div id="spectate-tip" class="hidden">👻 你已阵亡 · 观战中（AI 快速代打）</div>
+  </div>
+</section>
+
+<!-- ============ 结算画面 ============ -->
+<section id="screen-result" class="screen">
+  <div id="result-box">
+    <div id="result-title"></div>
+    <div id="result-sub"></div>
+    <div id="result-roles"></div>
+    <button id="btn-again" class="btn-main">再 战 一 局</button>
+  </div>
+</section>
+
+<div id="fx-layer"></div>
+<div id="modal-root"></div>
+<div id="error-box" class="hidden"></div>
+
+<script src="js/data.js"></script>
+<script src="js/fx.js"></script>
+<script src="js/ai.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
