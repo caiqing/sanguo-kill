@@ -229,6 +229,7 @@ async function runTurn(p){
   UI.renderAll();
   SFX.turn();
   log(`—— <b>${p.name}</b> 的回合 ——`);
+  FX.comment(`⚔ 轮到 ${p.name} 行动`);
   await DLY(p.human ? 200 : 700);
 
   // 判定阶段
@@ -267,6 +268,7 @@ async function judgePhase(p){
     const isLe = jc.key === "le";
     const ok = isLe ? (card.suit !== "♥") : (card.suit === "♠");
     log(`<b>${p.name}</b> 对【${jc.name}】判定：<span class="${suitColor(card.suit)}">${card.suit}${card.num}</span> → ${ok ? "生效" : "失效"}`);
+    FX.comment(`🎲 【${jc.name}】判定 ${card.suit}${card.num} — ${ok ? "生效！" : "失效"}`);
     await showJudgment(card, `【${jc.name}】判定`);
     await DLY(300);
     toDiscard(card);
@@ -367,13 +369,15 @@ async function performCard(p, card, use){
   if(zoneIdx >= 0) p.hand.splice(zoneIdx, 1);
   UI.renderAll();
 
-  const announce = async (label) => {
+  const announce = async () => {
     log(`<b>${p.name}</b> 使用 <b>${isVirtualSha ? "杀（" + card.name + "）" : "【" + card.name + "】"}` +
         (use.target && use.target.pid !== p.pid ? ` → <b>${use.target.name}</b>` : "") + `</b>`);
-    const fromEl = UI.seatElOf(p), toEl = use.target ? UI.seatElOf(use.target) : $("#center-stage");
-    FX.flyCard(card, p.human ? (document.querySelector(`.hcard[data-cid="${card.id}"]`) || fromEl) : fromEl, toEl === fromEl ? $("#center-stage") : toEl, { toScale: key === "shandian" || key === "le" ? .8 : 1 });
+    const fromEl = UI.seatElOf(p);
+    await FX.flyCard(card, p.human ? (document.querySelector(`.hcard[data-cid="${card.id}"]`) || fromEl) : fromEl, $("#center-stage"), { toScale: 1.3 });
     SFX.trick();
-    await DLY(600);
+    const toTxt = use.target && use.target.pid !== p.pid ? `，直指 ${use.target.name}` : "";
+    FX.comment(`${p.name} 打出【${card.name}】${toTxt}`);
+    await showCenterCard(card, use.target && use.target.pid !== p.pid ? `${p.name} → ${use.target.name}` : `${p.name} 打出`);
   };
 
   switch(key){
@@ -553,11 +557,12 @@ async function resolveSha(src, target, card, isVirtual){
   while(shanCount < need){
     const shan = await askForCard(target, c => canUseAsShan(target, c), 1,
       `<b>${src.name}</b> 对你使用【杀】（伤害 ${dmgTxt}${need > 1 ? "，【无双】：需两张闪" : ""}）— 请出【闪】躲避（${target.name}）`, true, { allowBagua:true, src });
-    if(shan === "bagua"){ shanCount++; log(`<b>${target.name}</b> 八卦阵判定生效，视为出【闪】。`); continue; }
+    if(shan === "bagua"){ shanCount++; log(`<b>${target.name}</b> 八卦阵判定生效，视为出【闪】。`); FX.comment(`${target.name} 的八卦阵显灵，视为【闪】！`); continue; }
     if(!shan){ dodged = false; break; }
     shanCount++;
     FX.shieldAt(UI.seatElOf(target));
     FX.word("闪！", "#7fd4ff", true);
+    FX.comment(`🛡 ${target.name} 打出【${shan.name}】，闪过一劫！`);
     toDiscard(shan);
     SFX.shan();
     UI.renderAll();
@@ -641,6 +646,7 @@ async function resolveDuel(src, target, card){
       await DLY(400);
     }
     if(!played){
+      FX.comment(`⚔ ${cur.name} 不敌，决斗落败！`);
       await dealDamage(cur, 1, other, card, { duel:true });
       break;
     }
@@ -664,6 +670,7 @@ async function dealDamage(t, n, src, card, opt = {}){
   if(opt.electric) FX.boltAt(el);
   if(!t.human) setTimeout(() => el.classList.remove("hurt"), 520);
   log(`<span class="lg-red">💥 <b>${t.name}</b> 受到 ${n} 点${opt.electric ? "雷电" : opt.trick || ""}伤害${src && src.pid !== t.pid ? `（来自 <b>${src.name}</b>）` : ""}，剩余体力 ${Math.max(0, t.hp)}。</span>`);
+  FX.comment(`💥 ${t.name} 中招！损失 ${n} 点${opt.electric ? "雷电" : ""}伤害（剩 ${Math.max(0, t.hp)}）`);
   if(src && src.pid !== t.pid){
     addGrudge(t, src, n * 2);
     // 打主公者，全场皆知其反贼相；斩杀反贼相者，彰显忠义
@@ -694,6 +701,7 @@ async function healHp(t, n, src){
   FX.particles(el, "💚", 3, { up: 40 });
   SFX.heal();
   log(`<b>${t.name}</b> 回复 ${t.hp - before} 点体力（${t.hp}/${t.maxHp}）。`, "lg-green");
+  FX.comment(`💚 ${t.name} 回复 ${t.hp - before} 点体力（${t.hp}/${t.maxHp}）`);
   UI.renderAll();
   await DLY(500);
 }
@@ -701,6 +709,7 @@ async function healHp(t, n, src){
 /* ---------- 濒死 ---------- */
 async function dying(t){
   log(`⚠️ <b>${t.name}</b> 濒死！`, "lg-red");
+  FX.comment(`⚠️ ${t.name} 命悬一线！`);
   FX.flash("rgba(160,20,20,.35)", 500);
   let need = 1 - t.hp;
   let cur = t;
@@ -738,6 +747,7 @@ async function die(p, killer){
   SFX.die();
   FX.particles(UI.seatElOf(p), "💀", 4, { up: 60 });
   log(`☠️ <b>${p.name}</b> 阵亡！身份是 —— <b style="color:${ROLES[p.role].hex}">${ROLES[p.role].name}</b>`);
+  FX.comment(`☠️ ${p.name} 倒下了！身份揭晓：${ROLES[p.role].name}`);
   UI.renderAll();
   await DLY(800);
   if(killer && !killer.dead){
@@ -777,6 +787,7 @@ async function askWuxieChain(trickName, source, target, depth = 0){
     p.hand.splice(p.hand.indexOf(wx), 1);
     UI.renderAll();
     log(`<b>${p.name}</b> 打出并弃置【无懈可击】${depth > 0 ? "，反制了这张【无懈可击】" : ""}！`);
+    FX.comment(`🛡 ${p.name} 打出【无懈可击】${depth > 0 ? "反制！" : "，化解了【" + trickName + "】"}`);
     await FX.flyCard(wx, UI.seatElOf(p), $("#center-stage"));
     FX.shieldAt($("#center-stage"));
     FX.word(depth > 0 ? "反制！" : "无懈可击", "#7fd4ff", true);
@@ -813,24 +824,25 @@ async function chooseRemoval(src, t, isShun){
 }
 
 /* ================= 询问系统 ================= */
-/* 判定牌在舞台中央停留展示，便于玩家看清花色 */
-async function showJudgment(card, label = "判 定"){
+/* 卡牌在舞台中央放大停留展示（打出的牌 / 判定牌 / 响应牌），便于看清插画细节 */
+async function showCenterCard(card, label = "", holdMs = 1300){
   const zone = document.getElementById("play-zone");
-  if(!zone){ console.warn("[showJudgment] play-zone 缺失，跳过展示"); return; }
+  if(!zone) return;
   const wrap = document.createElement("div");
-  wrap.className = "played-card judgment-show";
-  wrap.innerHTML = cardFaceHTML(card) + `<div class="played-label">${label}</div>`;
+  wrap.className = "played-card center-show judgment-show";
+  wrap.innerHTML = cardFaceHTML(card) + (label ? `<div class="played-label">${label}</div>` : "");
   zone.appendChild(wrap);
-  SFX.judge();
-  await DLY(1200);
+  await DLY(holdMs);
   wrap.remove();
 }
+const showJudgment = (card, label) => showCenterCard(card, label, 1200);
 
 /* 八卦阵判定：翻牌 → 停留展示 → 判定红/黑。返回是否生效 */
 async function doBaguaJudge(p){
   const card = flipTop();
   const ok = SUIT_RED(card.suit);
   log(`<b>${p.name}</b> 八卦阵判定：<span class="${suitColor(card.suit)}">${card.suit}${card.num}</span> → ${ok ? "红色，视为【闪】！" : "黑色，失效。"}`);
+  FX.comment(`🌀 八卦阵判定 ${card.suit}${card.num} — ${ok ? "视为【闪】！" : "失效"}`);
   await showJudgment(card, "八卦阵判定");
   toDiscard(card);
   UI.renderAll();
@@ -921,6 +933,7 @@ async function performSkill(p, act){
     for(const c of act.cards){ const i = p.hand.indexOf(c); if(i >= 0) p.hand.splice(i, 1); toDiscard(c); }
     UI.renderAll();
     FX.word("制衡", "#e8c832", true);
+    FX.comment(`✨ ${p.name} 发动【制衡】，弃 ${act.cards.length} 张换 ${act.cards.length} 张`);
     log(`<b>${p.name}</b> 发动【制衡】，弃置 ${act.cards.length} 张牌。`);
     await DLY(400);
     await drawCards(p, act.cards.length);
@@ -932,6 +945,7 @@ async function performSkill(p, act){
     t.hand.push(...act.cards);
     UI.renderAll();
     FX.word("仁德", "#7fb3e0", true);
+    FX.comment(`✨ ${p.name} 发动【仁德】，赠 ${act.cards.length} 张牌于 ${t.name}`);
     log(`<b>${p.name}</b> 发动【仁德】，将 ${act.cards.length} 张牌交给 <b>${t.name}</b>。`);
     await FX.flyCard(act.cards[0], UI.seatElOf(p), UI.seatElOf(t));
     if(act.cards.length >= 2) await healHp(p, 1, p);
@@ -943,6 +957,7 @@ async function performSkill(p, act){
     const [a, b] = act.targets;
     UI.renderAll();
     FX.word("离间", "#d4507f", true);
+    FX.comment(`✨ ${p.name} 发动【离间】，${a.name} 与 ${b.name} 反目成仇！`);
     log(`<b>${p.name}</b> 发动【离间】，弃置【${act.card.name}】，令 <b>${a.name}</b> 对 <b>${b.name}</b> 决斗！`);
     await DLY(500);
     if(await askWuxieChain("离间·决斗", p, b)) return;

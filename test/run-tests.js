@@ -60,6 +60,7 @@ const FX = {
   flyCard(){ return Promise.resolve(); },
   word(){}, numberAt(){}, flash(){}, shakeScreen(){},
   particles(){}, shieldAt(){}, arrowRain(){}, boltAt(){}, fireRise(){},
+  comment(){},
   centerOf(){ return { x: 0, y: 0 }; },
 };
 function suitColor(){ return "c-black"; }

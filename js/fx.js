@@ -161,8 +161,22 @@ const FX = (() => {
     }
   }
 
+  /* ---------- 游戏解说字幕 ---------- */
+  let commentTimer = null;
+  function comment(text){
+    if(NOFX()) return;
+    const el = document.getElementById("commentary");
+    if(!el) return;
+    el.textContent = text;
+    el.classList.remove("show");
+    void el.offsetWidth;
+    el.classList.add("show");
+    if(commentTimer) clearTimeout(commentTimer);
+    commentTimer = setTimeout(() => el.classList.remove("show"), 2800);
+  }
+
   return { cardHTML, flyCard, word, numberAt, flash, shakeScreen,
-           particles, shieldAt, arrowRain, boltAt, fireRise, centerOf };
+           particles, shieldAt, arrowRain, boltAt, fireRise, centerOf, comment };
 })();
 
 /* ============================================================

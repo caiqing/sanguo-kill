@@ -264,7 +264,28 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;}
 
 /* ---------- 中央出牌展示 ---------- */
 #play-zone{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
+
+/* 解说字幕条 */
+#commentary{
+  position:absolute;bottom:14px;left:50%;transform:translateX(-50%);
+  max-width:86%;padding:8px 26px;border-radius:24px;white-space:nowrap;
+  background:rgba(10,8,5,.85);border:1px solid rgba(201,162,39,.55);
+  color:#f0d878;font-size:16px;letter-spacing:1px;text-shadow:0 1px 2px #000;
+  opacity:0;transition:opacity .25s;z-index:6;overflow:hidden;text-overflow:ellipsis;
+  box-shadow:0 4px 16px rgba(0,0,0,.6);
+}
+#commentary.show{opacity:1;}
 .played-card{position:relative;animation:playPop .35s cubic-bezier(.2,1.6,.4,1);}
+.played-card.center-show{z-index:5;animation:playPop .3s cubic-bezier(.2,1.6,.4,1);}
+.played-card.center-show .gcard{
+  width:168px;height:233px;border-radius:14px;
+  box-shadow:0 12px 36px rgba(0,0,0,.85), 0 0 46px rgba(201,162,39,.4);
+}
+.played-card.center-show .gcard .face-name-bar{font-size:27px;}
+.played-card.center-show .gcard .face-name-bar.small{font-size:19px;}
+.played-card.center-show .gcard .suit{font-size:19px;}
+.played-card.center-show .gcard .num{font-size:16px;}
+.played-card.center-show .played-label{top:auto;bottom:-32px;font-size:15px;}
 @keyframes playPop{0%{transform:scale(.3) rotate(-16deg);opacity:0;}100%{transform:scale(1) rotate(0);opacity:1;}}
 .played-label{
   position:absolute;top:-26px;left:50%;transform:translateX(-50%);white-space:nowrap;
@@ -321,7 +342,7 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;}
   transition:transform .16s ease, box-shadow .16s, filter .16s;
   transform-origin:bottom center;
 }
-.hcard:hover{transform:translateY(-22px) scale(1.07) rotate(0deg) !important;z-index:50 !important;box-shadow:0 10px 26px rgba(0,0,0,.7);}
+.hcard:hover{transform:translateY(-30px) scale(1.16) rotate(0deg) !important;z-index:50 !important;box-shadow:0 14px 34px rgba(0,0,0,.8), 0 0 24px rgba(201,162,39,.35);}
 .hcard.selected{transform:translateY(-34px) scale(1.09) rotate(0deg) !important;z-index:51 !important;
   border-color:var(--gold-l);box-shadow:0 0 0 3px rgba(240,216,120,.55),0 10px 30px rgba(201,162,39,.6);}
 .hcard.usable{cursor:pointer;}
