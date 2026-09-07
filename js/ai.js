@@ -308,7 +308,207 @@ const AI = (() => {
     return !t || !t.dead;
   }
 
+  /* ============================================================
+   * AI 提示（教练模式）：复用决策链生成"建议 + 理由"，教学向
+   * ============================================================ */
+
+  // 出牌阶段建议
+  function advise(p){
+    const others = G.players.filter(x => !x.dead && x.pid !== p.pid);
+    const hand = p.hand;
+    const foes = others.filter(x => isEnemy(p, x));
+
+    // 装备
+    for(const c of hand.filter(x => x.cat === "equip")){
+      const cur = p.equip[c.slot];
+      if(c.slot === "weapon" && (!cur || (CARD_DEFS[c.key].range || 1) > (CARD_DEFS[cur.key].range || 1))){
+        const range = CARD_DEFS[c.key].range || 1;
+        const now = others.filter(x => dist(p, x) <= attackRange(p)).length;
+        const after = others.filter(x => dist(p, x) <= range).length;
+        if(after > now) return { kind:"card", card:c, use:{ key:c.key, target:null },
+          title:`先装备【${c.name}】`,
+          reason:`攻击范围从 ${attackRange(p)} 提升到 ${range}，能威胁的目标从 ${now} 人增加到 ${after} 人。武器先就位，你的【杀】才有覆盖面。` };
+      }
+      if(c.slot === "armor" && !cur){
+        return { kind:"card", card:c, use:{ key:c.key, target:null },
+          title:"先装备【八卦阵】",
+          reason:"之后每次被【杀】指定都可以判定：红牌约占牌堆一半，平均一半概率免伤，而且不消耗手牌里的【闪】。" };
+      }
+      if((c.slot === "horse+" || c.slot === "horse-") && (!cur || cur.key !== c.key)){
+        if(c.slot === "horse+"){
+          const pressed = foes.some(x => dist(p, x) <= 2);
+          if(pressed || p.hp <= 2) return { kind:"card", card:c, use:{ key:c.key, target:null },
+            title:`骑上【${c.name}】`,
+            reason: pressed ? "有敌人与你的距离已经贴到 2 以内，防御马让他们计算与你的距离 +1，【杀】更难够到你。" : "你血量偏低，先拉开距离更安全。" };
+        } else {
+          const far = foes.filter(x => dist(p, x) >= 2).length;
+          if(far && foes.length) return { kind:"card", card:c, use:{ key:c.key, target:null },
+            title:`骑上【${c.name}】`,
+            reason:`敌人都站在攻击范围之外，进攻马让距离 -1，或许刚好够到目标。` };
+        }
+      }
+    }
+
+    // 残血吃桃
+    if(p.hp <= 2 && p.hp < p.maxHp){
+      const tao = hand.find(c => c.key === "tao");
+      if(tao) return { kind:"card", card:tao, use:{ key:"tao", target:null },
+        title:"先回复体力",
+        reason:`你只剩 ${p.hp} 点体力，血线过低会成为集火目标。先吃【桃】站稳，防守牌留着不被弃掉。` };
+    }
+
+    // 无中生有
+    const wz = hand.find(c => c.key === "wuzhong");
+    if(wz) return { kind:"card", card:wz, use:{ key:"wuzhong", target:null },
+      title:"先摸两张牌",
+      reason:"【无中生有】白赚两张牌、没有任何代价，先摸牌再决定后续打法，选择更多。" };
+
+    // 制衡
+    if(p.hero.id === "sunquan" && !p.skillUsed && hand.length >= 2){
+      const junk = hand.filter(c => discardScore(p, c) <= 4);
+      if(junk.length >= 2) return { kind:"skill", skill:"zhiheng", cards:junk,
+        title:"发动【制衡】",
+        reason:`这 ${junk.length} 张牌（${junk.map(c => c.name).join("、")}）当前价值不高，换成新牌可能摸到【杀】【闪】【桃】。孙权的核心就是每回合把手牌换成质量最高的组合。` };
+    }
+
+    // 乐不思蜀
+    const le = hand.find(c => c.key === "le");
+    if(le){
+      const t = bestTarget(p, others.filter(x => !x.judgeCards.some(j => j.key === "le")), x => threatScore(p, x) > 0);
+      if(t) return { kind:"card", card:le, use:{ key:"le", target:t },
+        title:`【乐不思蜀】贴给 ${t.name}`,
+        reason:`判定不为红桃（概率 3/4）他下回合就要跳过出牌阶段——等于白赚一回合。他是目前对你威胁最大的目标。` };
+    }
+
+    // 闪电
+    const sd = hand.find(c => c.key === "shandian");
+    if(sd && p.hp >= 3 && !p.judgeCards.some(j => j.key === "shandian")){
+      return { kind:"card", card:sd, use:{ key:"shandian", target:null },
+        title:"挂出【闪电】",
+        reason:`你血量健康（${p.hp} 点），能扛住一次 3 点判定失败；闪电会顺时针移动，抽到黑桃时大概率劈中你的敌人。风险与收益并存。` };
+    }
+
+    // 决斗
+    const jd = hand.find(c => c.key === "juedou");
+    if(jd){
+      const t = bestTarget(p, others, x => threatScore(p, x) > 0 && x.hp <= 3);
+      if(t) return { kind:"card", card:jd, use:{ key:"juedou", target:t },
+        title:`与 ${t.name} 决斗`,
+        reason:`他只剩 ${t.hp} 点体力且手牌不多（${t.hand.length} 张），轮到他出【杀】时大概率出不来——白嫖一次伤害。` };
+    }
+
+    // 杀（含武圣虚拟杀与酒杀）
+    const shaCandidates = hand.filter(c => canUseAsSha(p, c));
+    const canSha = p.hero.id === "zhangfei" || p.equip.weapon?.key === "nulver" || p.shaUsed < 1;
+    if(canSha && shaCandidates.length){
+      const inRange = others.filter(x => dist(p, x) <= attackRange(p) && canBeShaTarget(p, x));
+      const t = bestTarget(p, inRange, x => threatScore(p, x) > -1);
+      if(t){
+        const why = isEnemy(p, t) ? "他是你已确认的敌对目标"
+          : (p.grudge[t.pid] || 0) >= 3 ? `他对你累计造成过 ${p.grudge[t.pid] || 0} 点威胁，是当前最该还手的人`
+          : "他的手牌和血量对你压力最大";
+        const killTxt = t.hp <= 1 ? `这一刀大概率带走他。` : `他剩 ${t.hp} 点体力，这一刀能显著压低他的状态。`;
+        const realSha = shaCandidates.find(c => c.key === "sha");
+        const card = realSha || shaCandidates[0];
+        const jiu = hand.find(c => c.key === "jiu");
+        const useVirtual = !realSha;
+        if(jiu && !p.drunk && (t.hp <= 2 || (t.pid === G.zhu.pid && p.role === "fan"))){
+          return { kind:"card", card:jiu, use:{ key:"jiu", target:null },
+            title:"先喝【酒】再杀",
+            reason:`${t.name} 只剩 ${t.hp} 点体力：先喝酒让下一张【杀】伤害变 2 点，可以一波带走，别浪费酒杀连招。` };
+        }
+        return { kind:"card", card, use:{ key:"sha", target:t },
+          title: useVirtual ? `把【${card.name}】当【杀】打向 ${t.name}` : `对 ${t.name} 出【杀】`,
+          reason:`原因：${why}。${killTxt}${useVirtual ? "（武圣：红色牌可当【杀】）" : ""}` };
+      }
+    }
+
+    // AOE
+    for(const key of ["nanman","wanjian"]){
+      const c = hand.find(x => x.key === key);
+      if(!c) continue;
+      const foesN = others.filter(x => threatScore(p, x) > 2).length;
+      const friendsN = others.filter(x => isFriend(p, x)).length;
+      if(foesN >= friendsN + 1) return { kind:"card", card:c, use:{ key:key, target:null },
+        title:`放【${c.name}】`,
+        reason:`场上对你有威胁的目标有 ${foesN} 个，友方只有 ${friendsN} 个——无差别攻击收益大于损失。注意友方也会受伤。` };
+    }
+
+    // 拆桥
+    const chai = hand.find(c => c.key === "chai");
+    if(chai){
+      const t = bestTarget(p, others.filter(x => totalCards(x) > 0), x => threatScore(p, x) > 0);
+      if(t) return { kind:"card", card:chai, use:{ key:"chai", target:t },
+        title:`拆 ${t.name} 的一张牌`,
+        reason:`削弱敌人的手牌或装备就是削弱他的输出与防御。优先拆威胁最大的人。` };
+    }
+
+    // 仁德
+    if(p.hero.id === "liubei" && !p.skillUsed && p.hp < p.maxHp && hand.length >= 3){
+      const friend = others.find(x => isFriend(p, x));
+      if(friend){
+        const give = hand.slice().sort((a,b) => discardScore(p,a) - discardScore(p,b)).slice(0, 2);
+        return { kind:"skill", skill:"rende", cards:give, target:friend,
+          title:"发动【仁德】",
+          reason:`把 2 张用不上的牌送给 ${friend.name}，既强化队友，又能回复自己 1 点体力——一石二鸟。` };
+      }
+    }
+
+    // 离间
+    if(p.hero.id === "diaochan" && !p.skillUsed && hand.length > 1){
+      const males = others.filter(x => x.hero.gender === "m" && threatScore(p, x) > 2);
+      if(males.length >= 2){
+        const discard = hand.slice().sort((a,b) => discardScore(p,a) - discardScore(p,b))[0];
+        return { kind:"skill", skill:"lijian", card:discard, targets:males.slice(0, 2),
+          title:"发动【离间】",
+          reason:`让 ${males[0].name} 和 ${males[1].name} 决斗：无论谁输谁赢，损失的都不是你的牌——坐收渔利。` };
+      }
+    }
+
+    return { kind:"end", title:"结束回合",
+      reason:"手牌没有明显的高收益动作了。保留【杀】【闪】【桃】等防守牌，把手牌数控制在体力值以内即可。" };
+  }
+
+  // 响应建议：被杀要闪 / 决斗南蛮要杀 / 万箭要闪 / 濒死求桃
+  function adviseRespond(p, scene, srcName){
+    const hand = p.hand;
+    switch(scene){
+      case "sha": {
+        const shans = hand.filter(c => canUseAsShan(p, c)).length;
+        const dmgTxt = srcName ? `${srcName} 的【杀】` : "这张【杀】";
+        return `💡 建议：${shans ? `出【闪】——${dmgTxt}会造成 1 点伤害（若对方喝过酒则是 2 点），用一张【闪】完全抵消最划算。` : "你没有【闪】，若装备了八卦阵可以赌判定（约一半概率免伤）。"}`;
+      }
+      case "juedou": {
+        const shas = hand.filter(c => canUseAsSha(p, c)).length;
+        return `💡 建议：${shas ? `打出【杀】——不出就要受 1 点伤害，有杀别硬扛。` : "你没有【杀】，只能承受 1 点伤害；若濒死要提前留好【桃】。"}`;
+      }
+      case "nanman": {
+        const shas = hand.filter(c => canUseAsSha(p, c)).length;
+        return `💡 建议：${shas ? `打出【杀】——全场都要响应，省着点血。` : "你没有【杀】，将受 1 点伤害；血量健康时可以硬吃。"}`;
+      }
+      case "wanjian": {
+        const shans = hand.filter(c => canUseAsShan(p, c)).length;
+        return `💡 建议：${shans ? `打出【闪】——一张【闪】换 1 点血，稳赚。` : "你没有【闪】，将受 1 点伤害。"}`;
+      }
+      case "dying": {
+        const canSave = hand.some(c => c.key === "tao" || (c.key === "jiu" && p.pid === p.pid));
+        return `💡 建议：${canSave ? "出【桃】救人——救人者不树敌，且能阻止胜负天平倾斜；出牌前先想清楚他的身份对你是否有利。" : "你没有【桃】，只能眼看他倒下——记住凶手是谁，权衡这对你是否有利。"}`;
+      }
+    }
+    return "";
+  }
+
+  // 弃牌建议：保留高分牌，弃低分牌
+  function adviseDiscard(p, extra){
+    const ranked = p.hand.slice().sort((a,b) => discardScore(p,b) - discardScore(p,a));
+    const keep = ranked.slice(0, Math.max(0, p.hand.length - extra));
+    const drop = ranked.slice(Math.max(0, p.hand.length - extra));
+    if(!drop.length) return "";
+    return `💡 建议弃：${drop.map(c => `【${c.name}】`).join("、")}——保留【闪】【桃】等防守牌（${keep.map(c => c.name).join("、")}）价值更高。`;
+  }
+
   return { markAntiZhu, markProZhu, isEnemy, isFriend, threatScore,
-           wantShan, wantSave, wantWuxie, wantWuxieNest, discardScore, playAction,
+           wantShan, wantSave, wantWuxie, wantWuxieNest, discardScore, playAction, advise,
+           adviseRespond, adviseDiscard,
            wuguPick, pickRemoval, wantPiercing, wantChase };
 })();

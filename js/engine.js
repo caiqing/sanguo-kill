@@ -19,6 +19,11 @@ function newGame(cfg){
     shuffle(roles);
   }
   const heroPool = shuffle(HEROES.slice());
+  // 指定武将：把所选英雄调到玩家位（pid 0）
+  if(cfg.hero){
+    const hi = heroPool.findIndex(h => h.id === cfg.hero);
+    if(hi >= 0){ const [picked] = heroPool.splice(hi, 1); heroPool.unshift(picked); }
+  }
   const players = [];
   for(let i = 0; i < 5; i++){
     const hero = heroPool[i];
@@ -54,6 +59,7 @@ function newGame(cfg){
     round: 1,
     over: false,
     aiDelegated: false,
+    aiHint: (() => { try{ return localStorage.getItem("sgk_ai_hint") !== "0"; }catch(e){ return true; } })(),
     zhu: ordered[0],
     me: ordered.find(p => p.human),
     fast: false,
@@ -340,9 +346,15 @@ async function discardPhase(p){
   const cards = [];
   if(p.human){
     while(cards.length < extra && p.hand.length > 0 && p.human && !G.aiDelegated){
+      const rest = extra - cards.length;
+      let dPrompt = `弃牌阶段：手牌上限为体力值（${limit}），还需弃置 <b>${rest}</b> 张（已选 ${cards.length}/${extra}）`;
+      if(G.aiHint){
+        const adv = AI.adviseDiscard(p, rest);
+        if(adv) dPrompt += `<div class="ai-resp-hint">${adv}</div>`;
+      }
       const c = await UI.askRespond({
         cards: p.hand.slice(),
-        prompt:`弃牌阶段：手牌上限为体力值（${limit}），还需弃置 <b>${extra - cards.length}</b> 张（已选 ${cards.length}/${extra}）`,
+        prompt: dPrompt,
         allowCancel: false,
       });
       if(!c) continue;
@@ -458,11 +470,11 @@ async function performCard(p, card, use){
         if(t.pid === p.pid || t.dead) continue;
         if(await askWuxieChain(card.name, p, t, true)) continue;
         if(key === "nanman"){
-          const sha = await askForCard(t, c => canUseAsSha(t, c), 1, `<b>${p.name}</b> 发动【南蛮入侵】— 请打出一张【杀】，否则受 1 点伤害（${t.name}）`, true);
+          const sha = await askForCard(t, c => canUseAsSha(t, c), 1, `<b>${p.name}</b> 发动【南蛮入侵】— 请打出一张【杀】，否则受 1 点伤害（${t.name}）`, true, { scene:"nanman" });
           if(sha){ FX.word("杀", "#e0665c", true); toDiscard(sha); SFX.sha(); await DLY(350); }
           else await dealDamage(t, 1, p, null, { trick: card.name });
         } else {
-          const shan = await askForCard(t, c => canUseAsShan(t, c), 1, `<b>${p.name}</b> 发动【万箭齐发】— 请打出一张【闪】，否则受 1 点伤害（${t.name}）`, true);
+          const shan = await askForCard(t, c => canUseAsShan(t, c), 1, `<b>${p.name}</b> 发动【万箭齐发】— 请打出一张【闪】，否则受 1 点伤害（${t.name}）`, true, { scene:"wanjian" });
           if(shan){ FX.shieldAt(UI.seatElOf(t)); FX.word("闪", "#7fd4ff", true); toDiscard(shan); SFX.shan(); await DLY(350); }
           else await dealDamage(t, 1, p, null, { trick: card.name });
         }
@@ -560,7 +572,7 @@ async function resolveSha(src, target, card, isVirtual){
   const dmgTxt = `${estDmg} 点${src.drunk ? "（酒杀）" : ""}`;
   while(shanCount < need){
     const shan = await askForCard(target, c => canUseAsShan(target, c), 1,
-      `<b>${src.name}</b> 对你使用【杀】（伤害 ${dmgTxt}${need > 1 ? "，【无双】：需两张闪" : ""}）— 请出【闪】躲避（${target.name}）`, true, { allowBagua:true, src });
+      `<b>${src.name}</b> 对你使用【杀】（伤害 ${dmgTxt}${need > 1 ? "，【无双】：需两张闪" : ""}）— 请出【闪】躲避（${target.name}）`, true, { allowBagua:true, src, scene:"sha" });
     if(shan === "bagua"){ shanCount++; log(`<b>${target.name}</b> 八卦阵判定生效，视为出【闪】。`); FX.comment(`${target.name} 的八卦阵显灵，视为【闪】！`); continue; }
     if(!shan){ dodged = false; break; }
     shanCount++;
@@ -643,7 +655,7 @@ async function resolveDuel(src, target, card){
     const n = other.hero.id === "lvbu" ? 2 : 1; // 对面是吕布则需两张杀
     let played = true;
     for(let i = 0; i < n; i++){
-      const sha = await askForCard(cur, c => canUseAsSha(cur, c), 1, `决斗！请打出一张【杀】（${cur.name}）`, true);
+      const sha = await askForCard(cur, c => canUseAsSha(cur, c), 1, `与 <b>${other.name}</b> 决斗中 — 请打出一张【杀】，否则受 1 点伤害（${cur.name}）`, true, { scene:"juedou" });
       if(!sha){ played = false; break; }
       FX.word("杀", "#e0665c", true);
       toDiscard(sha); SFX.sha();
@@ -730,7 +742,7 @@ async function dying(t){
       if(willing){
         const tao = await askForCard(saver,
           c => c.key === "tao" || (c.key === "jiu" && saver.pid === t.pid) || (saver.hero.id === "huatuo" && !saver.isMyTurn && SUIT_RED(c.suit) && saver.pid === t.pid),
-          need, `请对濒死的 <b>${t.name}</b> 使用【桃】${saver.pid !== t.pid ? "" : "或【酒】"}（${saver.name}）`, true);
+          need, `请对濒死的 <b>${t.name}</b> 使用【桃】${saver.pid !== t.pid ? "" : "或【酒】"}（${saver.name}）`, true, { scene:"dying" });
         if(tao){
           await FX.flyCard(tao, UI.seatElOf(saver), UI.seatElOf(t));
           await healHp(t, 1, saver);
@@ -789,7 +801,7 @@ async function askWuxieChain(trickName, source, target, depth = 0){
     const want = p.human && !G.aiDelegated
       ? await askWuxieModal(p, depth === 0
           ? `【${trickName}】${target ? `（目标 ${target.name}）` : ""}即将生效 — 是否出【无懈可击】抵消？`
-          : `这张【无懈可击】抵消了【${trickName}】 — 是否再出【无懈可击】反制（原锦囊将恢复生效）？`)
+          : `这张【无懈可击】抵消了【${trickName}】 — 是否再出【无懈可击】反制（原锦囊将恢复生效）？`, trickName, target)
       : AI.wantWuxieNest(p, trickName, target, source, depth);
     if(!want) continue;
     const wx = p.hand.find(c => c.key === "wuxie");
@@ -896,7 +908,12 @@ async function askForCard(p, filter, count, prompt, allowDecline, opt = {}){
   if(!cands.length) return null;
   let picked;
   if(p.human && !G.aiDelegated){
-    picked = await UI.askRespond({ cards: cands, prompt, allowCancel: allowDecline });
+    let promptFull = prompt;
+    if(G.aiHint && opt.scene){
+      const adv = AI.adviseRespond(p, opt.scene, opt.src ? opt.src.name : null);
+      if(adv) promptFull += `<div class="ai-resp-hint">${adv}</div>`;
+    }
+    picked = await UI.askRespond({ cards: cands, prompt: promptFull, allowCancel: allowDecline });
     if(!picked) return null;
   } else {
     await DLY(300);
@@ -921,13 +938,20 @@ async function askHumanBool(p, text, canDo = true){
   });
 }
 
-/* 无懈可击专用询问：显示持有张数，出/不出 双按钮 */
-function askWuxieModal(p, text){
+/* 无懈可击专用询问：显示持有张数与 AI 建议，出/不出 双按钮 */
+function askWuxieModal(p, text, trickName, target){
   const cnt = p.hand.filter(c => c.key === "wuxie").length;
+  let hint = "";
+  if(G.aiHint && target){
+    hint = AI.isFriend(p, target) || target.pid === p.pid
+      ? `<div class="ai-resp-hint">💡 建议：出——${target.name} 是你的友方/自己，这张【${trickName}】对你们不利。</div>`
+      : AI.isEnemy(p, target)
+        ? `<div class="ai-resp-hint">💡 建议：不出——目标 ${target.name} 是你的敌对目标，让锦囊生效对你有利。</div>` : "";
+  }
   return new Promise(res => {
     UI.modal({
       title: "无懈可击",
-      desc: `${text}<br><span style="color:#a08e66">你手中有 ${cnt} 张【无懈可击】。</span>`,
+      desc: `${text}${hint}<br><span style="color:#a08e66">你手中有 ${cnt} 张【无懈可击】。</span>`,
       btns: [
         { label: "出【无懈可击】", primary: true, cb: () => res(true) },
         { label: "不 出", cb: () => res(false) },

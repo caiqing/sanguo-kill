@@ -225,6 +225,26 @@ const UI = (() => {
     setHint("出牌阶段：点击一张手牌，再点击目标角色头像（发光者可选）。");
     setButtons({ cancel:false, endturn:true });
     renderAll();
+    refreshAdvice();
+  }
+
+  /* ---------- AI 提示卡 ---------- */
+  function refreshAdvice(){
+    const box = $("hint-card");
+    if(!box) return;
+    if(!G.aiHint || !G.me.human || G.aiDelegated || G.phase !== "play" || G.turnPlayer !== G.me || G.me.dead){
+      box.classList.add("hidden");
+      return;
+    }
+    const adv = AI.advise(G.me);
+    S.advice = adv;
+    box.querySelector(".hc-body").innerHTML = `<b>${adv.title}</b><br>${adv.reason}`;
+    box.querySelector("#hc-accept").classList.toggle("hidden", adv.kind === "end");
+    box.classList.remove("hidden");
+  }
+  function hideAdvice(){
+    const box = $("hint-card");
+    if(box) box.classList.add("hidden");
   }
 
   function onHandClick(card, el){
@@ -266,6 +286,7 @@ const UI = (() => {
         const r = S.resolve; cleanup(); r({ type:"card", card, use:{ key:u.key, target:null } }); return;
       }
       S.mode = "selectTarget";
+      hideAdvice();
       S.pendingUse = uses[0];
       setHint(`已选 <b>${card.name}</b>（${useLabel(card, S.pendingUse)}）— 请点击目标角色${uses.length > 1 ? "；再次点击此牌可切换用法" : ""}，或点【取消】。`);
       setButtons({ use:true, cancel:true, endturn:false });
@@ -346,6 +367,24 @@ const UI = (() => {
     setHint("请先选择一张手牌。");
   };
 
+  /* AI 提示：采纳 / 忽略 */
+  $("hc-accept").onclick = () => {
+    const adv = S.advice;
+    if(!adv) return;
+    if(adv.kind === "end"){ hideAdvice(); return; }
+    const r = S.resolve;
+    if(!r) return;
+    hideAdvice();
+    if(adv.kind === "card"){
+      cleanup();
+      r({ type:"card", card:adv.card, use:{ key:adv.use.key, target:adv.use.target } });
+    } else if(adv.kind === "skill"){
+      cleanup();
+      r({ type:"skill", skill:adv.skill, cards:adv.cards, target:adv.target, targets:adv.targets });
+    }
+  };
+  $("hc-dismiss").onclick = hideAdvice;
+
   /* 结束回合 */
   $("btn-endturn").onclick = () => {
     if(UI.S.mode !== "play" && UI.S.mode !== "selectTarget") return;
@@ -369,6 +408,7 @@ const UI = (() => {
 
   /* =============== 响应面板（要闪/桃/无懈等） =============== */
   function askRespond(spec){
+    hideAdvice();
     return new Promise(resolve => {
       S.mode = "respond";
       S.respondSpec = spec;

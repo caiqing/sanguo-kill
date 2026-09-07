@@ -55,6 +55,7 @@
       <div id="round-info">第 1 轮</div>
       <div id="turn-banner">——</div>
       <div id="deck-info">牌堆 <b id="deck-count">0</b> 张</div>
+      <button id="btn-hint" title="AI 提示：出牌与响应时提供分析建议及理由">💡</button>
       <button id="btn-ai" title="AI 代打：开启后你的回合由 AI 自动出牌，可随时切回">🤖</button>
       <button id="btn-rules" title="玩法说明">?</button>
       <button id="btn-mute" title="音效开关">🔊</button>
@@ -71,6 +72,14 @@
       <div id="self-hero"></div>
       <div id="hand-wrap"><div id="hand-cards"></div></div>
       <div id="action-col">
+        <div id="hint-card" class="hidden">
+          <div class="hc-title">💡 AI 提示</div>
+          <div class="hc-body"></div>
+          <div class="hc-actions">
+            <button id="hc-accept" class="btn-sm">采 纳</button>
+            <button id="hc-dismiss" class="btn-sm">忽 略</button>
+          </div>
+        </div>
         <div id="hint-text">等待开局……</div>
         <div id="skill-btns"></div>
         <div id="action-btns">

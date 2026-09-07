@@ -80,9 +80,9 @@ function showStory(role){
 }
 
 /* ---------- 启动一局 ---------- */
-async function startGame(role){
+async function startGame(role, heroId){
   showScreen("screen-game");
-  newGame({ role });
+  newGame({ role, hero: heroId || null });
   // 观战加速：玩家死亡后
   const watch = setInterval(() => {
     if(!G) { clearInterval(watch); return; }
@@ -101,6 +101,8 @@ async function startGame(role){
 document.getElementById("btn-again").onclick = () => {
   G = null;
   document.getElementById("btn-ai").classList.remove("on");
+  const hb = document.getElementById("btn-hint");
+  try{ hb.classList.toggle("on", localStorage.getItem("sgk_ai_hint") !== "0"); }catch(e){ hb.classList.add("on"); }
   refreshReplayLast();
   document.getElementById("log-list").innerHTML = "";
   document.title = "三国杀 · 群雄逐鹿";
@@ -121,6 +123,18 @@ document.getElementById("btn-hero-confirm").onclick = () => {
   heroPick.realRole = realRole;
   showStory(realRole);
 };
+/* AI 提示开关（教练模式） */
+document.getElementById("btn-hint").onclick = () => {
+  if(!G) return;
+  G.aiHint = !G.aiHint;
+  try{ localStorage.setItem("sgk_ai_hint", G.aiHint ? "1" : "0"); }catch(e){}
+  const btn = document.getElementById("btn-hint");
+  btn.classList.toggle("on", G.aiHint);
+  btn.title = G.aiHint ? "AI 提示已开启：出牌/响应时提供分析建议（点击关闭）" : "AI 提示已关闭（点击开启）";
+  if(G.aiHint && G.phase === "play" && G.turnPlayer === G.me && G.me.human && !G.aiDelegated) UI.renderAll(true);
+  else UI.hideAdvice();
+};
+
 /* AI 代打开关 */
 document.getElementById("btn-ai").onclick = () => {
   if(!G || G.over || !G.me.alive) return;
@@ -211,6 +225,7 @@ function recordStats(win){
   try{ localStorage.setItem("sgk_stats", JSON.stringify(s)); }catch(e){}
   renderStats();
 refreshReplayLast();
+try{ document.getElementById("btn-hint").classList.toggle("on", localStorage.getItem("sgk_ai_hint") !== "0"); }catch(e){ document.getElementById("btn-hint").classList.add("on"); }
 
 /* ---------- 小屏适配：整体等比缩放 ---------- */
 }
@@ -223,6 +238,7 @@ function renderStats(){
 }
 renderStats();
 refreshReplayLast();
+try{ document.getElementById("btn-hint").classList.toggle("on", localStorage.getItem("sgk_ai_hint") !== "0"); }catch(e){ document.getElementById("btn-hint").classList.add("on"); }
 
 /* ---------- 小屏适配：整体等比缩放 ---------- */
 
@@ -246,7 +262,7 @@ fitScale();
     const hid = PARAMS.get("hero");
     if(hid){ const h = HEROES.find(x => x.id === hid); if(h) heroPick.hero = hid; }
     heroPick.realRole = realRole;
-    startGame(realRole);
+    startGame(realRole, heroPick.hero);
   }
 })();
 
