@@ -384,13 +384,20 @@ async function discardPhase(p){
 async function performCard(p, card, use){
   const key = use.key;
   const isVirtualSha = key === "sha" && card.key !== "sha";
-  // 抓取起飞点：人类玩家从那张手牌的位置起飞，AI 从其人物座位起飞
+  // 抓取起飞点：人类玩家从那张手牌的位置起飞；AI 从其人物头像（座位卡上半部）起飞
   let launchPoint = null;
   if(p.human || p.pid === G.me.pid){
     const cardEl = document.querySelector(`.hcard[data-cid="${card.id}"]`);
     if(cardEl) launchPoint = FX.centerOf(cardEl);
   }
-  if(!launchPoint) launchPoint = FX.centerOf(UI.seatElOf(p));
+  if(!launchPoint){
+    const seatEl = UI.seatElOf(p);
+    const r = seatEl.getBoundingClientRect();
+    if(r.width){
+      // 头像区在座位卡上部：取卡片中心、垂直上移约 1/4 卡高
+      launchPoint = { x: r.left + r.width / 2, y: r.top + r.height * 0.28 };
+    }
+  }
   const zoneIdx = p.hand.indexOf(card);
   if(zoneIdx >= 0) p.hand.splice(zoneIdx, 1);
   UI.renderAll();
