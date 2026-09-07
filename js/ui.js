@@ -21,7 +21,7 @@ const UI = (() => {
   function renderAll(force){
     if(!G) return;
     // 自动测试：节流渲染，只保证日志正确；关键交互（force=true）必须立即渲染
-    if(window.__noFx && !force){
+    if(window.__throttleRender && !force){
       const now = performance.now();
       if(now - __lastRender < 120 && !G.over) return;
       __lastRender = now;
@@ -81,7 +81,7 @@ const UI = (() => {
     if(p.reputation === "anti" && !p.dead) status.push(`<span title="已暴露敌意">🎯</span>`);
     el.innerHTML = `
       ${roleTag}
-      <div class="hero-portrait" style="color:${heroColor(p)};text-shadow:0 0 18px ${heroColor(p)}">${p.hero.name[0]}</div>
+      <div class="hero-portrait" style="color:${heroColor(p)};text-shadow:0 0 18px ${heroColor(p)}">${p.hero.name[0]}<div class="portrait-art" style="background-image:url('${heroArtURL(p.hero.id)}')"></div></div>
       <div class="hero-name">${p.hero.name}</div>
       <div class="hero-skill-tag">〔${p.hero.skill}〕</div>
       <div class="hp-row">${hpDots}</div>
@@ -107,7 +107,7 @@ const UI = (() => {
     box.innerHTML = `
       <div class="self-card ${p.pid === G.turnPlayer?.pid ? "turn" : ""}" id="self-card-el">
         <div class="self-role" style="background:${ROLES[p.role].hex}">${ROLES[p.role].name}</div>
-        <div class="self-portrait" style="color:${heroColor(p)};text-shadow:0 0 16px ${heroColor(p)}">${p.hero.name[0]}</div>
+        <div class="self-portrait" style="color:${heroColor(p)};text-shadow:0 0 16px ${heroColor(p)}">${p.hero.name[0]}<div class="portrait-art" style="background-image:url('${heroArtURL(p.hero.id)}')"></div></div>
         <div class="self-info">
           <div class="self-name">${p.hero.name}</div>
           <div class="self-skill">〔${p.hero.skill}〕${p.hero.skillDesc}</div>
@@ -421,12 +421,16 @@ const UI = (() => {
     box.scrollTop = box.scrollHeight;
   }
 
+  const __dummy = () => ({
+    classList:{ add(){}, remove(){}, toggle(){}, contains(){ return false; } },
+    getBoundingClientRect(){ return { left: innerWidth/2-54, top: innerHeight/2-75, width:108, height:150 }; },
+  });
   function seatElOf(p){
-    if(p.pid === G.me.pid) return $("self-card-el");
-    return document.querySelector(`.seat[data-pid="${p.pid}"]`);
+    if(p.pid === G.me.pid) return $("self-card-el") || __dummy();
+    return document.querySelector(`.seat[data-pid="${p.pid}"]`) || __dummy();
   }
 
-  return { S, renderAll, enterPlayMode, askRespond, modal, logLine,
+  return { S, renderAll, enterPlayMode, cleanup, askRespond, modal, logLine,
            setHint, setButtons, seatElOf, $ };
 })();
 

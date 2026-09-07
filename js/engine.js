@@ -53,6 +53,7 @@ function newGame(cfg){
     phase: "",
     round: 1,
     over: false,
+    aiDelegated: false,
     zhu: ordered[0],
     me: ordered.find(p => p.human),
     fast: false,
@@ -60,6 +61,25 @@ function newGame(cfg){
   };
   for(const p of G.players){ drawCardsRaw(p, 4); }
   return G;
+}
+
+/* AI 代打接管：切换瞬间处理挂起中的人类交互
+ * 出牌循环 → 哨兵重入 AI 决策；响应面板 → 放弃本次响应；
+ * 弹窗（八卦/无懈/贯石斧/五谷）无法安全跳过 → 等玩家处理完当前选择后生效 */
+function aiTakeover(){
+  if(!G || G.over || !G.me || G.me.dead) return;
+  if(G.phase === "play" && G.turnPlayer === G.me && UI.S.resolve &&
+     (UI.S.mode === "play" || UI.S.mode === "selectTarget")){
+    const r = UI.S.resolve;
+    UI.cleanup();
+    r({ type:"ai" });
+    return;
+  }
+  if(UI.S.mode === "respond" && UI.S.resolve){
+    const r = UI.S.resolve;
+    UI.cleanup();
+    r(null);
+  }
 }
 
 /* 记仇账本 */
@@ -288,10 +308,12 @@ async function playPhase(p){
   let guard = 0;
   while(!G.over && !p.dead && guard++ < 60){
     let act;
-    if(p.human){
+    if(p.human && !G.aiDelegated){
       UI.enterPlayMode();
       act = await new Promise(res => { UI.S.resolve = res; });
+      if(act && act.type === "ai") continue; // 代打接管：重入 AI 决策
     } else {
+      if(p.pid === G.me.pid && G.aiDelegated) UI.setHint("🤖 AI 代打中……");
       await DLY(650);
       act = AI.playAction(p);
     }
@@ -312,7 +334,7 @@ async function discardPhase(p){
   if(extra <= 0) return;
   const cards = [];
   if(p.human){
-    while(cards.length < extra && p.hand.length > 0){
+    while(cards.length < extra && p.hand.length > 0 && p.human && !G.aiDelegated){
       const c = await UI.askRespond({
         cards: p.hand.slice(),
         prompt:`弃牌阶段：手牌上限为体力值（${limit}），还需弃置 <b>${extra - cards.length}</b> 张（已选 ${cards.length}/${extra}）`,
@@ -324,8 +346,11 @@ async function discardPhase(p){
       cards.push(c);
       UI.renderAll();
     }
-  } else {
-    const picks = p.hand.slice().sort((a,b) => AI.discardScore(p,a) - AI.discardScore(p,b)).slice(0, extra);
+  }
+  if(!p.human || G.aiDelegated){
+    // AI 代打（或整局 AI）补齐弃牌
+    const picks = p.hand.slice().sort((a,b) => AI.discardScore(p,a) - AI.discardScore(p,b))
+      .slice(0, Math.max(0, extra - cards.length));
     for(const c of picks){ const i = p.hand.indexOf(c); if(i >= 0) p.hand.splice(i, 1); cards.push(c); }
   }
   for(const c of cards) toDiscard(c);
@@ -553,7 +578,7 @@ async function resolveSha(src, target, card, isVirtual){
       }
     }
     // 贯石斧：被闪抵消后可弃两张牌强行命中
-    if(src.equip.weapon?.key === "guanshi" && !src.dead && (src.hand.length) >= 2 && (src.human ? await askHumanBool(src, "【贯石斧】发动：弃两张牌，令此【杀】依然命中？") : AI.wantPiercing(src))){
+    if(src.equip.weapon?.key === "guanshi" && !src.dead && (src.hand.length) >= 2 && (src.human && !G.aiDelegated ? await askHumanBool(src, "【贯石斧】发动：弃两张牌，令此【杀】依然命中？") : AI.wantPiercing(src))){
       const sacs = await takeTwoCardsForAxe(src);
       if(sacs){
         log(`<b>${src.name}</b> 弃置两张牌发动【贯石斧】，强行命中！`);
@@ -742,15 +767,16 @@ async function askWuxieChain(trickName, source, target, depth = 0){
   for(let i = 0; i < G.players.length; i++){
     const p = G.players[(source.pid + i) % G.players.length];
     if(p.dead || !p.hand.some(c => c.key === "wuxie")) continue;
-    const want = p.human
-      ? await askHumanBool(p, depth === 0
+    const want = p.human && !G.aiDelegated
+      ? await askWuxieModal(p, depth === 0
           ? `【${trickName}】${target ? `（目标 ${target.name}）` : ""}即将生效 — 是否出【无懈可击】抵消？`
           : `这张【无懈可击】抵消了【${trickName}】 — 是否再出【无懈可击】反制（原锦囊将恢复生效）？`)
       : AI.wantWuxieNest(p, trickName, target, source, depth);
     if(!want) continue;
     const wx = p.hand.find(c => c.key === "wuxie");
     p.hand.splice(p.hand.indexOf(wx), 1);
-    log(`<b>${p.name}</b> 打出【无懈可击】${depth > 0 ? "，反制了这张【无懈可击】" : ""}！`);
+    UI.renderAll();
+    log(`<b>${p.name}</b> 打出并弃置【无懈可击】${depth > 0 ? "，反制了这张【无懈可击】" : ""}！`);
     await FX.flyCard(wx, UI.seatElOf(p), $("#center-stage"));
     FX.shieldAt($("#center-stage"));
     FX.word(depth > 0 ? "反制！" : "无懈可击", "#7fd4ff", true);
@@ -832,7 +858,7 @@ async function askForCard(p, filter, count, prompt, allowDecline, opt = {}){
   const cands = p.hand.filter(filter);
   // 八卦阵：无论是否手握闪，都可以选择赌判定
   if(opt.allowBagua && p.equip.armor){
-    if(p.human){
+    if(p.human && !G.aiDelegated){
       const choice = await askBaguaChoice(p, prompt, cands.length >= count);
       if(choice === "bagua"){
         if(await doBaguaJudge(p)) return "bagua";
@@ -847,7 +873,7 @@ async function askForCard(p, filter, count, prompt, allowDecline, opt = {}){
   }
   if(!cands.length) return null;
   let picked;
-  if(p.human){
+  if(p.human && !G.aiDelegated){
     picked = await UI.askRespond({ cards: cands, prompt, allowCancel: allowDecline });
     if(!picked) return null;
   } else {
@@ -860,7 +886,7 @@ async function askForCard(p, filter, count, prompt, allowDecline, opt = {}){
   return picked;
 }
 
-async function askHumanBool(p, text, canDo){
+async function askHumanBool(p, text, canDo = true){
   return new Promise(res => {
     UI.modal({
       title: "发动技能？",
@@ -868,6 +894,21 @@ async function askHumanBool(p, text, canDo){
       btns: [
         ...(canDo ? [{ label:"发 动", primary:true, cb: () => res(true) }] : []),
         { label:"放 弃", cb: () => res(false) },
+      ],
+    });
+  });
+}
+
+/* 无懈可击专用询问：显示持有张数，出/不出 双按钮 */
+function askWuxieModal(p, text){
+  const cnt = p.hand.filter(c => c.key === "wuxie").length;
+  return new Promise(res => {
+    UI.modal({
+      title: "无懈可击",
+      desc: `${text}<br><span style="color:#a08e66">你手中有 ${cnt} 张【无懈可击】。</span>`,
+      btns: [
+        { label: "出【无懈可击】", primary: true, cb: () => res(true) },
+        { label: "不 出", cb: () => res(false) },
       ],
     });
   });

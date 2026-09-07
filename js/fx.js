@@ -249,11 +249,37 @@ const SFX = (() => {
   return api;
 })();
 
+/* ---------- 卡牌插画资源 ---------- */
+const CARD_ART = {};
+["sha","shan","tao","jiu","wuzhong","wuxie","chai","shun","juedou","nanman",
+ "wanjian","taoyuan","wugu","le","shandian","nulver","qinglong","guanshi","bagua",
+ "chitu","dawan","dilu","jueying","zhaohuang"].forEach(k => {
+  CARD_ART[k] = `assets/cards/art/${k}.jpg`;
+});
+function heroArtURL(heroId){ return `assets/cards/art/hero-${heroId}.jpg`; }
+
 /* ---------- 卡牌 HTML 生成（手牌 / 飞行 / 弹窗共用） ---------- */
 function suitColor(suit){ return (suit === "♥" || suit === "♦") ? "c-red" : "c-black"; }
 
 function cardInnerHTML(card){
   const def = CARD_DEFS[card.key] || {};
+  const suitBits = `<span class="suit ${suitColor(card.suit)}">${card.suit}</span>
+    <span class="num ${suitColor(card.suit)}">${card.num}</span>`;
+  // 插画模式：整卡面背景图 + 底部牌名条（图加载失败时透明回退到字面由 CSS 层保障）
+  if(CARD_ART[card.key]){
+    let faceCls = "n-art";
+    if(card.key === "sha") faceCls = "t-sha";
+    else if(card.key === "shan") faceCls = "t-shan";
+    else if(card.key === "tao") faceCls = "t-tao";
+    else if(card.key === "jiu") faceCls = "t-jiu";
+    else if(card.cat === "delay") faceCls = "t-delay";
+    else if(card.cat === "trick") faceCls = "t-trick";
+    return `${suitBits}
+      <div class="face-art" style="background-image:url('${CARD_ART[card.key]}')"></div>
+      <div class="face-name-bar ${faceCls}${card.name.length > 2 ? " small" : ""}">${card.name}</div>
+      <span class="cat-badge">${def.cat === "equip" ? (SLOT_NAMES[card.slot] || "") : (CAT[def.cat] ? CAT[def.cat].slice(0, 2) : "")}</span>`;
+  }
+  // 字面回退
   let faceCls = "t-basic";
   if(card.key === "sha") faceCls = "t-sha";
   else if(card.key === "shan") faceCls = "t-shan";
@@ -264,8 +290,7 @@ function cardInnerHTML(card){
   else if(card.cat === "equip") faceCls = "t-equip";
   const small = card.name.length > 2 ? " small" : "";
   const badge = def.cat === "equip" ? (SLOT_NAMES[card.slot] || "") : (CAT[def.cat] ? CAT[def.cat].slice(0, 2) : "");
-  return `<span class="suit ${suitColor(card.suit)}">${card.suit}</span>
-    <span class="num ${suitColor(card.suit)}">${card.num}</span>
+  return `${suitBits}
     <div class="face ${faceCls}${small}">${card.name}</div>
     <span class="cat-badge">${badge}</span>`;
 }

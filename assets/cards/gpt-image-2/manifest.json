@@ -1,0 +1,417 @@
+{
+  "model": "gpt-image-2",
+  "size": "1024x1536",
+  "variants": 4,
+  "generatedAt": "2026-09-06T23:57:42.228Z",
+  "source": "/Users/caiqing/Documents/agents/github/creative-games/sanguo-kill/docs/card-art-prompts.md",
+  "entries": [
+    {
+      "index": 1,
+      "name": "3.1 杀",
+      "prompt": "a fierce broadsword slash cutting through the air with a crescent of crimson sword energy, sparks and ink splashes flying, dynamic diagonal composition, ancient Chinese Three Kingdoms era card game illustration, ink-wash painting blended with fine gongbi line art, dark lacquered background with aged parchment texture, ornate gold filigree border, dramatic rim lighting, rich vermilion and antique gold palette, highly detailed, centered composition, vertical portrait, keep the main subject within the central 70 percent, leave the top-left area empty for UI suit and rank overlays, reserve the bottom 15 percent as a dark subdued area for the card name, no readable text, letters, numbers, symbols, watermark, signature, or logo, avoid modern objects, photography, 3d render, anime chibi, western fantasy, low quality, blurry, deformed hands, extra fingers, oversaturated colors, flat colors",
+      "files": [
+        "assets/cards/gpt-image-2/variants/01-3.1-杀-v1.png",
+        "assets/cards/gpt-image-2/variants/01-3.1-杀-v2.png",
+        "assets/cards/gpt-image-2/variants/01-3.1-杀-v3.png",
+        "assets/cards/gpt-image-2/variants/01-3.1-杀-v4.png"
+      ],
+      "status": "done"
+    },
+    {
+      "index": 2,
+      "name": "3.2 闪",
+      "prompt": "a silver-clad warrior silhouette dodging with a glowing parry streak, elegant deflecting motion with moonlight-blue energy arc, motion blur afterimage, ancient Chinese Three Kingdoms era card game illustration, ink-wash painting blended with fine gongbi line art, dark lacquered background with aged parchment texture, ornate gold filigree border, dramatic rim lighting, rich vermilion and antique gold palette, highly detailed, centered composition, vertical portrait, keep the main subject within the central 70 percent, leave the top-left area empty for UI suit and rank overlays, reserve the bottom 15 percent as a dark subdued area for the card name, no readable text, letters, numbers, symbols, watermark, signature, or logo, avoid modern objects, photography, 3d render, anime chibi, western fantasy, low quality, blurry, deformed hands, extra fingers, oversaturated colors, flat colors",
+      "files": [
+        "assets/cards/gpt-image-2/variants/02-3.2-闪-v1.png",
+        "assets/cards/gpt-image-2/variants/02-3.2-闪-v2.png",
+        "assets/cards/gpt-image-2/variants/02-3.2-闪-v3.png",
+        "assets/cards/gpt-image-2/variants/02-3.2-闪-v4.png"
+      ],
+      "status": "done"
+    },
+    {
+      "index": 3,
+      "name": "3.3 桃",
+      "prompt": "a single luminous immortal peach resting on a jade plate, soft pink petals drifting around, gentle green healing aura, spring blossom atmosphere, ancient Chinese Three Kingdoms era card game illustration, ink-wash painting blended with fine gongbi line art, dark lacquered background with aged parchment texture, ornate gold filigree border, dramatic rim lighting, rich vermilion and antique gold palette, highly detailed, centered composition, vertical portrait, keep the main subject within the central 70 percent, leave the top-left area empty for UI suit and rank overlays, reserve the bottom 15 percent as a dark subdued area for the card name, no readable text, letters, numbers, symbols, watermark, signature, or logo, avoid modern objects, photography, 3d render, anime chibi, western fantasy, low quality, blurry, deformed hands, extra fingers, oversaturated colors, flat colors",
+      "files": [
+        "assets/cards/gpt-image-2/variants/03-3.3-桃-v1.png",
+        "assets/cards/gpt-image-2/variants/03-3.3-桃-v2.png",
+        "assets/cards/gpt-image-2/variants/03-3.3-桃-v3.png",
+        "assets/cards/gpt-image-2/variants/03-3.3-桃-v4.png"
+      ],
+      "status": "done"
+    },
+    {
+      "index": 4,
+      "name": "3.4 酒",
+      "prompt": "an ancient bronze wine vessel with surging rice wine, crimson warrior spirit rising from the splashing wine like flame, fierce bravado atmosphere, ancient Chinese Three Kingdoms era card game illustration, ink-wash painting blended with fine gongbi line art, dark lacquered background with aged parchment texture, ornate gold filigree border, dramatic rim lighting, rich vermilion and antique gold palette, highly detailed, centered composition, vertical portrait, keep the main subject within the central 70 percent, leave the top-left area empty for UI suit and rank overlays, reserve the bottom 15 percent as a dark subdued area for the card name, no readable text, letters, numbers, symbols, watermark, signature, or logo, avoid modern objects, photography, 3d render, anime chibi, western fantasy, low quality, blurry, deformed hands, extra fingers, oversaturated colors, flat colors",
+      "files": [
+        "assets/cards/gpt-image-2/variants/04-3.4-酒-v1.png",
+        "assets/cards/gpt-image-2/variants/04-3.4-酒-v2.png",
+        "assets/cards/gpt-image-2/variants/04-3.4-酒-v3.png",
+        "assets/cards/gpt-image-2/variants/04-3.4-酒-v4.png"
+      ],
+      "status": "done"
+    },
+    {
+      "index": 5,
+      "name": "4.1 过河拆桥",
+      "prompt": "an old wooden bridge breaking apart at its center, two halves collapsing into a rushing river below, splashing water and drifting planks, cunning destruction mood, ancient Chinese Three Kingdoms era card game illustration, ink-wash painting blended with fine gongbi line art, dark lacquered background with aged parchment texture, ornate gold filigree border, dramatic rim lighting, rich vermilion and antique gold palette, highly detailed, centered composition, vertical portrait, keep the main subject within the central 70 percent, leave the top-left area empty for UI suit and rank overlays, reserve the bottom 15 percent as a dark subdued area for the card name, no readable text, letters, numbers, symbols, watermark, signature, or logo, avoid modern objects, photography, 3d render, anime chibi, western fantasy, low quality, blurry, deformed hands, extra fingers, oversaturated colors, flat colors",
+      "files": [
+        "assets/cards/gpt-image-2/variants/05-4.1-过河拆桥-v1.png",
+        "assets/cards/gpt-image-2/variants/05-4.1-过河拆桥-v2.png",
+        "assets/cards/gpt-image-2/variants/05-4.1-过河拆桥-v3.png",
+        "assets/cards/gpt-image-2/variants/05-4.1-过河拆桥-v4.png"
+      ],
+      "status": "done"
+    },
+    {
+      "index": 6,
+      "name": "4.2 顺手牵羊",
+      "prompt": "a stealthy hand emerging from a flowing silk sleeve snatching an ancient scroll, a subtle jade goat ornament glowing in the shadow, espionage atmosphere, ancient Chinese Three Kingdoms era card game illustration, ink-wash painting blended with fine gongbi line art, dark lacquered background with aged parchment texture, ornate gold filigree border, dramatic rim lighting, rich vermilion and antique gold palette, highly detailed, centered composition, vertical portrait, keep the main subject within the central 70 percent, leave the top-left area empty for UI suit and rank overlays, reserve the bottom 15 percent as a dark subdued area for the card name, no readable text, letters, numbers, symbols, watermark, signature, or logo, avoid modern objects, photography, 3d render, anime chibi, western fantasy, low quality, blurry, deformed hands, extra fingers, oversaturated colors, flat colors",
+      "files": [
+        "assets/cards/gpt-image-2/variants/06-4.2-顺手牵羊-v1.png",
+        "assets/cards/gpt-image-2/variants/06-4.2-顺手牵羊-v2.png",
+        "assets/cards/gpt-image-2/variants/06-4.2-顺手牵羊-v3.png",
+        "assets/cards/gpt-image-2/variants/06-4.2-顺手牵羊-v4.png"
+      ],
+      "status": "done"
+    },
+    {
+      "index": 7,
+      "name": "4.3 无中生有",
+      "prompt": "a pair of open palms conjuring golden light between them, two glowing ghostly cards materializing from swirling magic particles, mystery and creation mood, ancient Chinese Three Kingdoms era card game illustration, ink-wash painting blended with fine gongbi line art, dark lacquered background with aged parchment texture, ornate gold filigree border, dramatic rim lighting, rich vermilion and antique gold palette, highly detailed, centered composition, vertical portrait, keep the main subject within the central 70 percent, leave the top-left area empty for UI suit and rank overlays, reserve the bottom 15 percent as a dark subdued area for the card name, no readable text, letters, numbers, symbols, watermark, signature, or logo, avoid modern objects, photography, 3d render, anime chibi, western fantasy, low quality, blurry, deformed hands, extra fingers, oversaturated colors, flat colors",
+      "files": [
+        "assets/cards/gpt-image-2/variants/07-4.3-无中生有-v1.png",
+        "assets/cards/gpt-image-2/variants/07-4.3-无中生有-v2.png",
+        "assets/cards/gpt-image-2/variants/07-4.3-无中生有-v3.png",
+        "assets/cards/gpt-image-2/variants/07-4.3-无中生有-v4.png"
+      ],
+      "status": "done"
+    },
+    {
+      "index": 8,
+      "name": "4.4 无懈可击",
+      "prompt": "a translucent bagua energy shield deflecting a volley of incoming dark projectiles, radiant defensive barrier with reverberating light ripples, impregnable defense mood, ancient Chinese Three Kingdoms era card game illustration, ink-wash painting blended with fine gongbi line art, dark lacquered background with aged parchment texture, ornate gold filigree border, dramatic rim lighting, rich vermilion and antique gold palette, highly detailed, centered composition, vertical portrait, keep the main subject within the central 70 percent, leave the top-left area empty for UI suit and rank overlays, reserve the bottom 15 percent as a dark subdued area for the card name, no readable text, letters, numbers, symbols, watermark, signature, or logo, avoid modern objects, photography, 3d render, anime chibi, western fantasy, low quality, blurry, deformed hands, extra fingers, oversaturated colors, flat colors",
+      "files": [
+        "assets/cards/gpt-image-2/variants/08-4.4-无懈可击-v1.png",
+        "assets/cards/gpt-image-2/variants/08-4.4-无懈可击-v2.png",
+        "assets/cards/gpt-image-2/variants/08-4.4-无懈可击-v3.png",
+        "assets/cards/gpt-image-2/variants/08-4.4-无懈可击-v4.png"
+      ],
+      "status": "done"
+    },
+    {
+      "index": 9,
+      "name": "4.5 决斗",
+      "prompt": "two ancient Chinese warriors clashing blades in a duel, sparks exploding at the crossing point of sword and glaive, dust swirling beneath their feet, heroic confrontation, ancient Chinese Three Kingdoms era card game illustration, ink-wash painting blended with fine gongbi line art, dark lacquered background with aged parchment texture, ornate gold filigree border, dramatic rim lighting, rich vermilion and antique gold palette, highly detailed, centered composition, vertical portrait, keep the main subject within the central 70 percent, leave the top-left area empty for UI suit and rank overlays, reserve the bottom 15 percent as a dark subdued area for the card name, no readable text, letters, numbers, symbols, watermark, signature, or logo, avoid modern objects, photography, 3d render, anime chibi, western fantasy, low quality, blurry, deformed hands, extra fingers, oversaturated colors, flat colors",
+      "files": [
+        "assets/cards/gpt-image-2/variants/09-4.5-决斗-v1.png",
+        "assets/cards/gpt-image-2/variants/09-4.5-决斗-v2.png",
+        "assets/cards/gpt-image-2/variants/09-4.5-决斗-v3.png",
+        "assets/cards/gpt-image-2/variants/09-4.5-决斗-v4.png"
+      ],
+      "status": "done"
+    },
+    {
+      "index": 10,
+      "name": "4.6 南蛮入侵",
+      "prompt": "a horde of southern barbarian war elephants and rattan-armored tribesmen charging forward, dust clouds and war drums, savage invasion momentum, ancient Chinese Three Kingdoms era card game illustration, ink-wash painting blended with fine gongbi line art, dark lacquered background with aged parchment texture, ornate gold filigree border, dramatic rim lighting, rich vermilion and antique gold palette, highly detailed, centered composition, vertical portrait, keep the main subject within the central 70 percent, leave the top-left area empty for UI suit and rank overlays, reserve the bottom 15 percent as a dark subdued area for the card name, no readable text, letters, numbers, symbols, watermark, signature, or logo, avoid modern objects, photography, 3d render, anime chibi, western fantasy, low quality, blurry, deformed hands, extra fingers, oversaturated colors, flat colors",
+      "files": [
+        "assets/cards/gpt-image-2/variants/10-4.6-南蛮入侵-v1.png",
+        "assets/cards/gpt-image-2/variants/10-4.6-南蛮入侵-v2.png",
+        "assets/cards/gpt-image-2/variants/10-4.6-南蛮入侵-v3.png",
+        "assets/cards/gpt-image-2/variants/10-4.6-南蛮入侵-v4.png"
+      ],
+      "status": "done"
+    },
+    {
+      "index": 11,
+      "name": "4.7 万箭齐发",
+      "prompt": "countless arrows filling the entire sky like a black rainstorm descending, silhouetted archers firing in unison from below, overwhelming barrage, ancient Chinese Three Kingdoms era card game illustration, ink-wash painting blended with fine gongbi line art, dark lacquered background with aged parchment texture, ornate gold filigree border, dramatic rim lighting, rich vermilion and antique gold palette, highly detailed, centered composition, vertical portrait, keep the main subject within the central 70 percent, leave the top-left area empty for UI suit and rank overlays, reserve the bottom 15 percent as a dark subdued area for the card name, no readable text, letters, numbers, symbols, watermark, signature, or logo, avoid modern objects, photography, 3d render, anime chibi, western fantasy, low quality, blurry, deformed hands, extra fingers, oversaturated colors, flat colors",
+      "files": [
+        "assets/cards/gpt-image-2/variants/11-4.7-万箭齐发-v1.png",
+        "assets/cards/gpt-image-2/variants/11-4.7-万箭齐发-v2.png",
+        "assets/cards/gpt-image-2/variants/11-4.7-万箭齐发-v3.png",
+        "assets/cards/gpt-image-2/variants/11-4.7-万箭齐发-v4.png"
+      ],
+      "status": "done"
+    },
+    {
+      "index": 12,
+      "name": "4.8 桃园结义",
+      "prompt": "three incense sticks and three wine bowls in a blossoming peach garden, petals falling gently, sworn brotherhood ceremony with warm golden light, solemn and heartfelt, ancient Chinese Three Kingdoms era card game illustration, ink-wash painting blended with fine gongbi line art, dark lacquered background with aged parchment texture, ornate gold filigree border, dramatic rim lighting, rich vermilion and antique gold palette, highly detailed, centered composition, vertical portrait, keep the main subject within the central 70 percent, leave the top-left area empty for UI suit and rank overlays, reserve the bottom 15 percent as a dark subdued area for the card name, no readable text, letters, numbers, symbols, watermark, signature, or logo, avoid modern objects, photography, 3d render, anime chibi, western fantasy, low quality, blurry, deformed hands, extra fingers, oversaturated colors, flat colors",
+      "files": [
+        "assets/cards/gpt-image-2/variants/12-4.8-桃园结义-v1.png",
+        "assets/cards/gpt-image-2/variants/12-4.8-桃园结义-v2.png",
+        "assets/cards/gpt-image-2/variants/12-4.8-桃园结义-v3.png",
+        "assets/cards/gpt-image-2/variants/12-4.8-桃园结义-v4.png"
+      ],
+      "status": "done"
+    },
+    {
+      "index": 13,
+      "name": "4.9 五谷丰登",
+      "prompt": "a golden harvest scene with stacked grain sheaves and overflowing rice sacks, abundant wheat ears in the foreground, bountiful blessing atmosphere with warm sunlight, ancient Chinese Three Kingdoms era card game illustration, ink-wash painting blended with fine gongbi line art, dark lacquered background with aged parchment texture, ornate gold filigree border, dramatic rim lighting, rich vermilion and antique gold palette, highly detailed, centered composition, vertical portrait, keep the main subject within the central 70 percent, leave the top-left area empty for UI suit and rank overlays, reserve the bottom 15 percent as a dark subdued area for the card name, no readable text, letters, numbers, symbols, watermark, signature, or logo, avoid modern objects, photography, 3d render, anime chibi, western fantasy, low quality, blurry, deformed hands, extra fingers, oversaturated colors, flat colors",
+      "files": [
+        "assets/cards/gpt-image-2/variants/13-4.9-五谷丰登-v1.png",
+        "assets/cards/gpt-image-2/variants/13-4.9-五谷丰登-v2.png",
+        "assets/cards/gpt-image-2/variants/13-4.9-五谷丰登-v3.png",
+        "assets/cards/gpt-image-2/variants/13-4.9-五谷丰登-v4.png"
+      ],
+      "status": "done"
+    },
+    {
+      "index": 14,
+      "name": "5.1 乐不思蜀",
+      "prompt": "a decadent palace chamber with dancing silhouettes and flickering candles, an entranced lord slumping on a throne surrounded by silk drapes and wine cups, bewitching indulgence mood, ancient Chinese Three Kingdoms era card game illustration, ink-wash painting blended with fine gongbi line art, dark lacquered background with aged parchment texture, ornate gold filigree border, dramatic rim lighting, rich vermilion and antique gold palette, highly detailed, centered composition, vertical portrait, keep the main subject within the central 70 percent, leave the top-left area empty for UI suit and rank overlays, reserve the bottom 15 percent as a dark subdued area for the card name, no readable text, letters, numbers, symbols, watermark, signature, or logo, avoid modern objects, photography, 3d render, anime chibi, western fantasy, low quality, blurry, deformed hands, extra fingers, oversaturated colors, flat colors",
+      "files": [
+        "assets/cards/gpt-image-2/variants/14-5.1-乐不思蜀-v1.png",
+        "assets/cards/gpt-image-2/variants/14-5.1-乐不思蜀-v2.png",
+        "assets/cards/gpt-image-2/variants/14-5.1-乐不思蜀-v3.png",
+        "assets/cards/gpt-image-2/variants/14-5.1-乐不思蜀-v4.png"
+      ],
+      "status": "done"
+    },
+    {
+      "index": 15,
+      "name": "5.2 闪电",
+      "prompt": "a colossal purple lightning bolt striking down from storm clouds onto an ancient battlefield, electric arcs crawling across the ground, apocalyptic thunderstorm, ancient Chinese Three Kingdoms era card game illustration, ink-wash painting blended with fine gongbi line art, dark lacquered background with aged parchment texture, ornate gold filigree border, dramatic rim lighting, rich vermilion and antique gold palette, highly detailed, centered composition, vertical portrait, keep the main subject within the central 70 percent, leave the top-left area empty for UI suit and rank overlays, reserve the bottom 15 percent as a dark subdued area for the card name, no readable text, letters, numbers, symbols, watermark, signature, or logo, avoid modern objects, photography, 3d render, anime chibi, western fantasy, low quality, blurry, deformed hands, extra fingers, oversaturated colors, flat colors",
+      "files": [
+        "assets/cards/gpt-image-2/variants/15-5.2-闪电-v1.png",
+        "assets/cards/gpt-image-2/variants/15-5.2-闪电-v2.png",
+        "assets/cards/gpt-image-2/variants/15-5.2-闪电-v3.png",
+        "assets/cards/gpt-image-2/variants/15-5.2-闪电-v4.png"
+      ],
+      "status": "done"
+    },
+    {
+      "index": 16,
+      "name": "诸葛连弩",
+      "prompt": "an intricate repeating crossbow mechanism with a magazine of loaded bolts, close-up of wooden and bronze engineering details, Zhuge Liang invention aesthetic, ancient Chinese Three Kingdoms era card game illustration, ink-wash painting blended with fine gongbi line art, dark lacquered background with aged parchment texture, ornate gold filigree border, dramatic rim lighting, rich vermilion and antique gold palette, highly detailed, centered composition, vertical portrait, keep the main subject within the central 70 percent, leave the top-left area empty for UI suit and rank overlays, reserve the bottom 15 percent as a dark subdued area for the card name, no readable text, letters, numbers, symbols, watermark, signature, or logo, avoid modern objects, photography, 3d render, anime chibi, western fantasy, low quality, blurry, deformed hands, extra fingers, oversaturated colors, flat colors",
+      "files": [
+        "assets/cards/gpt-image-2/variants/16-诸葛连弩-v1.png",
+        "assets/cards/gpt-image-2/variants/16-诸葛连弩-v2.png",
+        "assets/cards/gpt-image-2/variants/16-诸葛连弩-v3.png",
+        "assets/cards/gpt-image-2/variants/16-诸葛连弩-v4.png"
+      ],
+      "status": "done"
+    },
+    {
+      "index": 17,
+      "name": "青龙偃月刀",
+      "prompt": "a massive guandao glaive with an emerald dragon coiling around its blade, moonlight glinting on the crescent edge, mythical weapon aura, ancient Chinese Three Kingdoms era card game illustration, ink-wash painting blended with fine gongbi line art, dark lacquered background with aged parchment texture, ornate gold filigree border, dramatic rim lighting, rich vermilion and antique gold palette, highly detailed, centered composition, vertical portrait, keep the main subject within the central 70 percent, leave the top-left area empty for UI suit and rank overlays, reserve the bottom 15 percent as a dark subdued area for the card name, no readable text, letters, numbers, symbols, watermark, signature, or logo, avoid modern objects, photography, 3d render, anime chibi, western fantasy, low quality, blurry, deformed hands, extra fingers, oversaturated colors, flat colors",
+      "files": [
+        "assets/cards/gpt-image-2/variants/17-青龙偃月刀-v1.png",
+        "assets/cards/gpt-image-2/variants/17-青龙偃月刀-v2.png",
+        "assets/cards/gpt-image-2/variants/17-青龙偃月刀-v3.png",
+        "assets/cards/gpt-image-2/variants/17-青龙偃月刀-v4.png"
+      ],
+      "status": "done"
+    },
+    {
+      "index": 18,
+      "name": "贯石斧",
+      "prompt": "a colossal battle axe splitting a giant boulder in half, rock debris and dust exploding outward, brutal crushing force, ancient Chinese Three Kingdoms era card game illustration, ink-wash painting blended with fine gongbi line art, dark lacquered background with aged parchment texture, ornate gold filigree border, dramatic rim lighting, rich vermilion and antique gold palette, highly detailed, centered composition, vertical portrait, keep the main subject within the central 70 percent, leave the top-left area empty for UI suit and rank overlays, reserve the bottom 15 percent as a dark subdued area for the card name, no readable text, letters, numbers, symbols, watermark, signature, or logo, avoid modern objects, photography, 3d render, anime chibi, western fantasy, low quality, blurry, deformed hands, extra fingers, oversaturated colors, flat colors",
+      "files": [
+        "assets/cards/gpt-image-2/variants/18-贯石斧-v1.png",
+        "assets/cards/gpt-image-2/variants/18-贯石斧-v2.png",
+        "assets/cards/gpt-image-2/variants/18-贯石斧-v3.png",
+        "assets/cards/gpt-image-2/variants/18-贯石斧-v4.png"
+      ],
+      "status": "done"
+    },
+    {
+      "index": 19,
+      "name": "八卦阵",
+      "prompt": "a floating bagua compass array with eight trigram symbols rotating in mid-air, golden runes and mist swirling around the formation, mystical taoist magic, ancient Chinese Three Kingdoms era card game illustration, ink-wash painting blended with fine gongbi line art, dark lacquered background with aged parchment texture, ornate gold filigree border, dramatic rim lighting, rich vermilion and antique gold palette, highly detailed, centered composition, vertical portrait, keep the main subject within the central 70 percent, leave the top-left area empty for UI suit and rank overlays, reserve the bottom 15 percent as a dark subdued area for the card name, no readable text, letters, numbers, symbols, watermark, signature, or logo, avoid modern objects, photography, 3d render, anime chibi, western fantasy, low quality, blurry, deformed hands, extra fingers, oversaturated colors, flat colors",
+      "files": [
+        "assets/cards/gpt-image-2/variants/19-八卦阵-v1.png",
+        "assets/cards/gpt-image-2/variants/19-八卦阵-v2.png",
+        "assets/cards/gpt-image-2/variants/19-八卦阵-v3.png",
+        "assets/cards/gpt-image-2/variants/19-八卦阵-v4.png"
+      ],
+      "status": "done"
+    },
+    {
+      "index": 20,
+      "name": "赤兔",
+      "prompt": "a legendary crimson stallion rearing and neighing, mane flowing like flames, fire and embers trailing its hooves, peerless steed aura, ancient Chinese Three Kingdoms era card game illustration, ink-wash painting blended with fine gongbi line art, dark lacquered background with aged parchment texture, ornate gold filigree border, dramatic rim lighting, rich vermilion and antique gold palette, highly detailed, centered composition, vertical portrait, keep the main subject within the central 70 percent, leave the top-left area empty for UI suit and rank overlays, reserve the bottom 15 percent as a dark subdued area for the card name, no readable text, letters, numbers, symbols, watermark, signature, or logo, avoid modern objects, photography, 3d render, anime chibi, western fantasy, low quality, blurry, deformed hands, extra fingers, oversaturated colors, flat colors",
+      "files": [
+        "assets/cards/gpt-image-2/variants/20-赤兔-v1.png",
+        "assets/cards/gpt-image-2/variants/20-赤兔-v2.png",
+        "assets/cards/gpt-image-2/variants/20-赤兔-v3.png",
+        "assets/cards/gpt-image-2/variants/20-赤兔-v4.png"
+      ],
+      "status": "done"
+    },
+    {
+      "index": 21,
+      "name": "大宛",
+      "prompt": "a mighty western regions warhorse galloping at full speed across desert sand, sweat like blood on its glossy coat, sandstorm trailing behind, ancient Chinese Three Kingdoms era card game illustration, ink-wash painting blended with fine gongbi line art, dark lacquered background with aged parchment texture, ornate gold filigree border, dramatic rim lighting, rich vermilion and antique gold palette, highly detailed, centered composition, vertical portrait, keep the main subject within the central 70 percent, leave the top-left area empty for UI suit and rank overlays, reserve the bottom 15 percent as a dark subdued area for the card name, no readable text, letters, numbers, symbols, watermark, signature, or logo, avoid modern objects, photography, 3d render, anime chibi, western fantasy, low quality, blurry, deformed hands, extra fingers, oversaturated colors, flat colors",
+      "files": [
+        "assets/cards/gpt-image-2/variants/21-大宛-v1.png",
+        "assets/cards/gpt-image-2/variants/21-大宛-v2.png",
+        "assets/cards/gpt-image-2/variants/21-大宛-v3.png",
+        "assets/cards/gpt-image-2/variants/21-大宛-v4.png"
+      ],
+      "status": "done"
+    },
+    {
+      "index": 22,
+      "name": "的卢",
+      "prompt": "a powerful black horse with a distinctive white blaze on its forehead standing guard with a protective stance, loyal guardian aura, ancient Chinese Three Kingdoms era card game illustration, ink-wash painting blended with fine gongbi line art, dark lacquered background with aged parchment texture, ornate gold filigree border, dramatic rim lighting, rich vermilion and antique gold palette, highly detailed, centered composition, vertical portrait, keep the main subject within the central 70 percent, leave the top-left area empty for UI suit and rank overlays, reserve the bottom 15 percent as a dark subdued area for the card name, no readable text, letters, numbers, symbols, watermark, signature, or logo, avoid modern objects, photography, 3d render, anime chibi, western fantasy, low quality, blurry, deformed hands, extra fingers, oversaturated colors, flat colors",
+      "files": [
+        "assets/cards/gpt-image-2/variants/22-的卢-v1.png",
+        "assets/cards/gpt-image-2/variants/22-的卢-v2.png",
+        "assets/cards/gpt-image-2/variants/22-的卢-v3.png",
+        "assets/cards/gpt-image-2/variants/22-的卢-v4.png"
+      ],
+      "status": "done"
+    },
+    {
+      "index": 23,
+      "name": "绝影",
+      "prompt": "a phantom black stallion running so fast its body partially dissolves into shadow and mist, afterimage streaks, elusive shadow steed, ancient Chinese Three Kingdoms era card game illustration, ink-wash painting blended with fine gongbi line art, dark lacquered background with aged parchment texture, ornate gold filigree border, dramatic rim lighting, rich vermilion and antique gold palette, highly detailed, centered composition, vertical portrait, keep the main subject within the central 70 percent, leave the top-left area empty for UI suit and rank overlays, reserve the bottom 15 percent as a dark subdued area for the card name, no readable text, letters, numbers, symbols, watermark, signature, or logo, avoid modern objects, photography, 3d render, anime chibi, western fantasy, low quality, blurry, deformed hands, extra fingers, oversaturated colors, flat colors",
+      "files": [
+        "assets/cards/gpt-image-2/variants/23-绝影-v1.png",
+        "assets/cards/gpt-image-2/variants/23-绝影-v2.png",
+        "assets/cards/gpt-image-2/variants/23-绝影-v3.png",
+        "assets/cards/gpt-image-2/variants/23-绝影-v4.png"
+      ],
+      "status": "done"
+    },
+    {
+      "index": 24,
+      "name": "爪黄飞电",
+      "prompt": "a golden-haired imperial horse with white hooves galloping on lightning, royal yellow coat gleaming, electric sparks under its hooves, ancient Chinese Three Kingdoms era card game illustration, ink-wash painting blended with fine gongbi line art, dark lacquered background with aged parchment texture, ornate gold filigree border, dramatic rim lighting, rich vermilion and antique gold palette, highly detailed, centered composition, vertical portrait, keep the main subject within the central 70 percent, leave the top-left area empty for UI suit and rank overlays, reserve the bottom 15 percent as a dark subdued area for the card name, no readable text, letters, numbers, symbols, watermark, signature, or logo, avoid modern objects, photography, 3d render, anime chibi, western fantasy, low quality, blurry, deformed hands, extra fingers, oversaturated colors, flat colors",
+      "files": [
+        "assets/cards/gpt-image-2/variants/24-爪黄飞电-v1.png",
+        "assets/cards/gpt-image-2/variants/24-爪黄飞电-v2.png",
+        "assets/cards/gpt-image-2/variants/24-爪黄飞电-v3.png",
+        "assets/cards/gpt-image-2/variants/24-爪黄飞电-v4.png"
+      ],
+      "status": "done"
+    },
+    {
+      "index": 25,
+      "name": "刘备 · 仁德",
+      "prompt": "a benevolent warlord in dual-sword regalia with kind determined eyes, silk robes of deep blue, half-body portrait with subtle warm smile, charismatic leadership aura, ancient Chinese Three Kingdoms era card game illustration, ink-wash painting blended with fine gongbi line art, dark lacquered background with aged parchment texture, ornate gold filigree border, dramatic rim lighting, rich vermilion and antique gold palette, highly detailed, centered composition, vertical portrait, keep the main subject within the central 70 percent, leave the top-left area empty for UI suit and rank overlays, reserve the bottom 15 percent as a dark subdued area for the card name, no readable text, letters, numbers, symbols, watermark, signature, or logo, avoid modern objects, photography, 3d render, anime chibi, western fantasy, low quality, blurry, deformed hands, extra fingers, oversaturated colors, flat colors",
+      "files": [
+        "assets/cards/gpt-image-2/variants/25-刘备-仁德-v1.png",
+        "assets/cards/gpt-image-2/variants/25-刘备-仁德-v2.png",
+        "assets/cards/gpt-image-2/variants/25-刘备-仁德-v3.png",
+        "assets/cards/gpt-image-2/variants/25-刘备-仁德-v4.png"
+      ],
+      "status": "done"
+    },
+    {
+      "index": 26,
+      "name": "关羽 · 武圣",
+      "prompt": "a red-faced majestic general with a long flowing beard, green robe and jade belt, holding his guandao glaive, piercing loyal eyes, half-body portrait, ancient Chinese Three Kingdoms era card game illustration, ink-wash painting blended with fine gongbi line art, dark lacquered background with aged parchment texture, ornate gold filigree border, dramatic rim lighting, rich vermilion and antique gold palette, highly detailed, centered composition, vertical portrait, keep the main subject within the central 70 percent, leave the top-left area empty for UI suit and rank overlays, reserve the bottom 15 percent as a dark subdued area for the card name, no readable text, letters, numbers, symbols, watermark, signature, or logo, avoid modern objects, photography, 3d render, anime chibi, western fantasy, low quality, blurry, deformed hands, extra fingers, oversaturated colors, flat colors",
+      "files": [
+        "assets/cards/gpt-image-2/variants/26-关羽-武圣-v1.png",
+        "assets/cards/gpt-image-2/variants/26-关羽-武圣-v2.png",
+        "assets/cards/gpt-image-2/variants/26-关羽-武圣-v3.png",
+        "assets/cards/gpt-image-2/variants/26-关羽-武圣-v4.png"
+      ],
+      "status": "done"
+    },
+    {
+      "index": 27,
+      "name": "张飞 · 咆哮",
+      "prompt": "a fierce black-faced warrior with leopard-like round glaring eyes, wild beard, gripping a long serpent spear, roaring with thunderous fury, half-body portrait, ancient Chinese Three Kingdoms era card game illustration, ink-wash painting blended with fine gongbi line art, dark lacquered background with aged parchment texture, ornate gold filigree border, dramatic rim lighting, rich vermilion and antique gold palette, highly detailed, centered composition, vertical portrait, keep the main subject within the central 70 percent, leave the top-left area empty for UI suit and rank overlays, reserve the bottom 15 percent as a dark subdued area for the card name, no readable text, letters, numbers, symbols, watermark, signature, or logo, avoid modern objects, photography, 3d render, anime chibi, western fantasy, low quality, blurry, deformed hands, extra fingers, oversaturated colors, flat colors",
+      "files": [
+        "assets/cards/gpt-image-2/variants/27-张飞-咆哮-v1.png",
+        "assets/cards/gpt-image-2/variants/27-张飞-咆哮-v2.png",
+        "assets/cards/gpt-image-2/variants/27-张飞-咆哮-v3.png",
+        "assets/cards/gpt-image-2/variants/27-张飞-咆哮-v4.png"
+      ],
+      "status": "done"
+    },
+    {
+      "index": 28,
+      "name": "诸葛亮 · 空城",
+      "prompt": "a serene strategist in a scholar robe holding a crane feather fan, calm piercing wisdom in his eyes, sitting composed before an empty fortress gate, half-body portrait, ancient Chinese Three Kingdoms era card game illustration, ink-wash painting blended with fine gongbi line art, dark lacquered background with aged parchment texture, ornate gold filigree border, dramatic rim lighting, rich vermilion and antique gold palette, highly detailed, centered composition, vertical portrait, keep the main subject within the central 70 percent, leave the top-left area empty for UI suit and rank overlays, reserve the bottom 15 percent as a dark subdued area for the card name, no readable text, letters, numbers, symbols, watermark, signature, or logo, avoid modern objects, photography, 3d render, anime chibi, western fantasy, low quality, blurry, deformed hands, extra fingers, oversaturated colors, flat colors",
+      "files": [
+        "assets/cards/gpt-image-2/variants/28-诸葛亮-空城-v1.png",
+        "assets/cards/gpt-image-2/variants/28-诸葛亮-空城-v2.png",
+        "assets/cards/gpt-image-2/variants/28-诸葛亮-空城-v3.png",
+        "assets/cards/gpt-image-2/variants/28-诸葛亮-空城-v4.png"
+      ],
+      "status": "done"
+    },
+    {
+      "index": 29,
+      "name": "赵云 · 龙胆",
+      "prompt": "a handsome young general in silver-white armor with a flowing cape, holding a slender spear, valiant and graceful, dragon energy swirling around, half-body portrait, ancient Chinese Three Kingdoms era card game illustration, ink-wash painting blended with fine gongbi line art, dark lacquered background with aged parchment texture, ornate gold filigree border, dramatic rim lighting, rich vermilion and antique gold palette, highly detailed, centered composition, vertical portrait, keep the main subject within the central 70 percent, leave the top-left area empty for UI suit and rank overlays, reserve the bottom 15 percent as a dark subdued area for the card name, no readable text, letters, numbers, symbols, watermark, signature, or logo, avoid modern objects, photography, 3d render, anime chibi, western fantasy, low quality, blurry, deformed hands, extra fingers, oversaturated colors, flat colors",
+      "files": [
+        "assets/cards/gpt-image-2/variants/29-赵云-龙胆-v1.png",
+        "assets/cards/gpt-image-2/variants/29-赵云-龙胆-v2.png",
+        "assets/cards/gpt-image-2/variants/29-赵云-龙胆-v3.png",
+        "assets/cards/gpt-image-2/variants/29-赵云-龙胆-v4.png"
+      ],
+      "status": "done"
+    },
+    {
+      "index": 30,
+      "name": "曹操 · 奸雄",
+      "prompt": "a cunning overlord with sharp hawk-like eyes and a thin beard, dark armor with crimson accents, subtle sinister smile, calculating ambition aura, half-body portrait, ancient Chinese Three Kingdoms era card game illustration, ink-wash painting blended with fine gongbi line art, dark lacquered background with aged parchment texture, ornate gold filigree border, dramatic rim lighting, rich vermilion and antique gold palette, highly detailed, centered composition, vertical portrait, keep the main subject within the central 70 percent, leave the top-left area empty for UI suit and rank overlays, reserve the bottom 15 percent as a dark subdued area for the card name, no readable text, letters, numbers, symbols, watermark, signature, or logo, avoid modern objects, photography, 3d render, anime chibi, western fantasy, low quality, blurry, deformed hands, extra fingers, oversaturated colors, flat colors",
+      "files": [
+        "assets/cards/gpt-image-2/variants/30-曹操-奸雄-v1.png",
+        "assets/cards/gpt-image-2/variants/30-曹操-奸雄-v2.png",
+        "assets/cards/gpt-image-2/variants/30-曹操-奸雄-v3.png",
+        "assets/cards/gpt-image-2/variants/30-曹操-奸雄-v4.png"
+      ],
+      "status": "done"
+    },
+    {
+      "index": 31,
+      "name": "孙权 · 制衡",
+      "prompt": "a young emperor with purple beard and jade-green eyes, golden imperial robes, holding a balance scale of state affairs in his gaze, composed authority, half-body portrait, ancient Chinese Three Kingdoms era card game illustration, ink-wash painting blended with fine gongbi line art, dark lacquered background with aged parchment texture, ornate gold filigree border, dramatic rim lighting, rich vermilion and antique gold palette, highly detailed, centered composition, vertical portrait, keep the main subject within the central 70 percent, leave the top-left area empty for UI suit and rank overlays, reserve the bottom 15 percent as a dark subdued area for the card name, no readable text, letters, numbers, symbols, watermark, signature, or logo, avoid modern objects, photography, 3d render, anime chibi, western fantasy, low quality, blurry, deformed hands, extra fingers, oversaturated colors, flat colors",
+      "files": [
+        "assets/cards/gpt-image-2/variants/31-孙权-制衡-v1.png",
+        "assets/cards/gpt-image-2/variants/31-孙权-制衡-v2.png",
+        "assets/cards/gpt-image-2/variants/31-孙权-制衡-v3.png",
+        "assets/cards/gpt-image-2/variants/31-孙权-制衡-v4.png"
+      ],
+      "status": "done"
+    },
+    {
+      "index": 32,
+      "name": "吕布 · 无双",
+      "prompt": "the mightiest warrior with pheasant-tail feathers on his golden headdress, armored in black and gold, wielding a halberd atop a red steed silhouette, arrogant invincible aura, half-body portrait, ancient Chinese Three Kingdoms era card game illustration, ink-wash painting blended with fine gongbi line art, dark lacquered background with aged parchment texture, ornate gold filigree border, dramatic rim lighting, rich vermilion and antique gold palette, highly detailed, centered composition, vertical portrait, keep the main subject within the central 70 percent, leave the top-left area empty for UI suit and rank overlays, reserve the bottom 15 percent as a dark subdued area for the card name, no readable text, letters, numbers, symbols, watermark, signature, or logo, avoid modern objects, photography, 3d render, anime chibi, western fantasy, low quality, blurry, deformed hands, extra fingers, oversaturated colors, flat colors",
+      "files": [
+        "assets/cards/gpt-image-2/variants/32-吕布-无双-v1.png",
+        "assets/cards/gpt-image-2/variants/32-吕布-无双-v2.png",
+        "assets/cards/gpt-image-2/variants/32-吕布-无双-v3.png",
+        "assets/cards/gpt-image-2/variants/32-吕布-无双-v4.png"
+      ],
+      "status": "done"
+    },
+    {
+      "index": 33,
+      "name": "貂蝉 · 离间",
+      "prompt": "a breathtakingly beautiful court lady in flowing pink and white silk, delicate hairpins and jade ornaments, enigmatic smile hiding scheming intent, moonlit garden, half-body portrait, ancient Chinese Three Kingdoms era card game illustration, ink-wash painting blended with fine gongbi line art, dark lacquered background with aged parchment texture, ornate gold filigree border, dramatic rim lighting, rich vermilion and antique gold palette, highly detailed, centered composition, vertical portrait, keep the main subject within the central 70 percent, leave the top-left area empty for UI suit and rank overlays, reserve the bottom 15 percent as a dark subdued area for the card name, no readable text, letters, numbers, symbols, watermark, signature, or logo, avoid modern objects, photography, 3d render, anime chibi, western fantasy, low quality, blurry, deformed hands, extra fingers, oversaturated colors, flat colors",
+      "files": [
+        "assets/cards/gpt-image-2/variants/33-貂蝉-离间-v1.png",
+        "assets/cards/gpt-image-2/variants/33-貂蝉-离间-v2.png",
+        "assets/cards/gpt-image-2/variants/33-貂蝉-离间-v3.png",
+        "assets/cards/gpt-image-2/variants/33-貂蝉-离间-v4.png"
+      ],
+      "status": "done"
+    },
+    {
+      "index": 34,
+      "name": "华佗 · 急救",
+      "prompt": "a gentle elderly physician in plain green robes carrying a medicine gourd and silk medical scrolls, kind wise eyes, healing herbs floating around, half-body portrait, ancient Chinese Three Kingdoms era card game illustration, ink-wash painting blended with fine gongbi line art, dark lacquered background with aged parchment texture, ornate gold filigree border, dramatic rim lighting, rich vermilion and antique gold palette, highly detailed, centered composition, vertical portrait, keep the main subject within the central 70 percent, leave the top-left area empty for UI suit and rank overlays, reserve the bottom 15 percent as a dark subdued area for the card name, no readable text, letters, numbers, symbols, watermark, signature, or logo, avoid modern objects, photography, 3d render, anime chibi, western fantasy, low quality, blurry, deformed hands, extra fingers, oversaturated colors, flat colors",
+      "files": [
+        "assets/cards/gpt-image-2/variants/34-华佗-急救-v1.png",
+        "assets/cards/gpt-image-2/variants/34-华佗-急救-v2.png",
+        "assets/cards/gpt-image-2/variants/34-华佗-急救-v3.png",
+        "assets/cards/gpt-image-2/variants/34-华佗-急救-v4.png"
+      ],
+      "status": "done"
+    }
+  ]
+}

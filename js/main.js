@@ -22,7 +22,7 @@ function buildHeroScreen(){
     el.dataset.hid = h.id;
     el.innerHTML = `
       <div class="hero-hp">${Array.from({length: h.hp}, () => "<i></i>").join("")}</div>
-      <div class="hero-portrait" style="background:linear-gradient(160deg, ${h.color}44, #241b10 70%)">${h.name[0]}</div>
+      <div class="hero-portrait" style="background:linear-gradient(160deg, ${h.color}44, #241b10 70%)">${h.name[0]}<div class="portrait-art" style="background-image:url('${heroArtURL(h.id)}')"></div></div>
       <div class="hero-name">${h.name}</div>
       <div class="hero-title">「${h.title}」</div>
       <div class="hero-skill"><b>【${h.skill}】</b>${h.skillDesc}</div>`;
@@ -100,6 +100,7 @@ async function startGame(role){
 /* ---------- 结算再来一局 ---------- */
 document.getElementById("btn-again").onclick = () => {
   G = null;
+  document.getElementById("btn-ai").classList.remove("on");
   document.getElementById("log-list").innerHTML = "";
   document.title = "三国杀 · 群雄逐鹿";
   showScreen("screen-hero");
@@ -119,6 +120,20 @@ document.getElementById("btn-hero-confirm").onclick = () => {
   heroPick.realRole = realRole;
   showStory(realRole);
 };
+/* AI 代打开关 */
+document.getElementById("btn-ai").onclick = () => {
+  if(!G || G.over || !G.me.alive) return;
+  G.aiDelegated = !G.aiDelegated;
+  G.me.human = !G.aiDelegated;
+  const btn = document.getElementById("btn-ai");
+  btn.classList.toggle("on", G.aiDelegated);
+  btn.title = G.aiDelegated ? "AI 代打中：点击切回手动操作" : "AI 代打：开启后你的回合由 AI 自动出牌，可随时切回";
+  log(G.aiDelegated
+    ? `🤖 <b>AI 代打已开启</b> — 你的回合将由 AI 自动出牌，随时点击 🤖 切回手动。`
+    : `🖐️ 已切回<b>手动操作</b>。`);
+  if(G.aiDelegated) aiTakeover();
+};
+
 document.getElementById("btn-mute").onclick = (e) => {
   const off = SFX.toggle();
   e.currentTarget.classList.toggle("off", off);
@@ -143,6 +158,12 @@ addEventListener("unhandledrejection", e => {
 
 /* ---------- 启动 ---------- */
 buildHeroScreen();
+
+/* 预热卡牌/武将插画缓存（选将阶段静默加载，进入对局零等待） */
+(function preloadArt(){
+  Object.values(CARD_ART).forEach(url => { const i = new Image(); i.src = url; });
+  HEROES.forEach(h => { const i = new Image(); i.src = heroArtURL(h.id); });
+})();
 
 /* ---------- 玩法说明 ---------- */
 const RULES_HTML = `
@@ -211,6 +232,7 @@ fitScale();
 /* 自动测试模式：全自动 AI 对局 */
 if(PARAMS.get("autotest")){
   window.__noFx = true;
+  window.__throttleRender = true; // 极速模式：动画与渲染全节流
   SFX.toggle(); // 静音，省掉音频开销
   G = null;
   showScreen("screen-game");
@@ -226,7 +248,7 @@ if(PARAMS.get("autotest")){
 
 /* UI 冒烟测试：真实 DOM 点击模拟玩家操作（选牌/选目标/确认/响应/弹窗） */
 if(PARAMS.get("uitest")){
-  window.__noFx = true; // 跳过动画 DOM，聚焦交互与逻辑路径覆盖
+  window.__noFx = true; // 跳过动画 DOM，但保留完整 UI 渲染（点击依赖真实元素）
   showScreen("screen-game");
   newGame({ role: "random" });
   G.fast = true; // 压缩动画延时，让冒烟能覆盖更多轮次
@@ -238,6 +260,7 @@ if(PARAMS.get("uitest")){
     const $ = id => document.getElementById(id);
     const modalBtn = document.querySelector("#modal-root.show .modal-btns button");
     const modalCard = document.querySelector("#modal-root.show .modal-cards .gcard");
+    if(actions === 500 || actions === 1100){ document.getElementById("btn-ai").click(); return; }
     // 响应面板优先（要闪/桃/无懈等）：有可用牌就出第一张，否则放弃
     if(UI.S.mode === "respond"){
       const respCard = document.querySelector(".hcard.usable");
