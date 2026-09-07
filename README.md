@@ -2,6 +2,8 @@
 
 一个原创实现的类三国杀卡牌对战网页游戏。单页应用，纯 HTML/CSS/JS，无任何外部依赖与网络请求，双击 `index.html` 或用任意静态服务器打开即可游玩。
 
+**🎮 在线游玩**：https://caiqing.github.io/sanguo-kill/ （GitHub Pages，加载约 4MB 插画资源后即可完整体验）
+
 ## 玩法概览
 
 经典的 5 人身份局：**1 主公 · 1 忠臣 · 2 反贼 · 1 内奸**。
@@ -101,6 +103,8 @@ sanguo-kill/
 │   └── main.js         # 入口：屏幕流转/选将/剧情/自动测试
 └── test/run-tests.js   # 无头逻辑回归测试
 ```
+
+> 本仓库同时发布在 GitHub Pages（`main` 分支根目录），push 后约 1 分钟自动更新线上版本。
 
 ## 许可证
 
