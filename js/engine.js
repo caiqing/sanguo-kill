@@ -128,7 +128,9 @@ function drawCardsRaw(p, n){
       G.deck = shuffle(G.discard.splice(0));
       log("牌堆已空，弃牌堆重新洗入牌堆。");
     }
-    p.hand.push(G.deck.pop());
+    const c = G.deck.pop();
+    if(!c) continue;
+    p.hand.push(c);
   }
 }
 async function drawCards(p, n, silent){
@@ -142,6 +144,7 @@ async function drawCards(p, n, silent){
   UI.renderAll();
 }
 function toDiscard(card){
+  if(!card){ console.error("[toDiscard] 收到空牌，已忽略。调用栈：", new Error().stack); return; }
   G.discard.push(card);
 }
 function totalCards(p){
@@ -308,10 +311,11 @@ async function judgePhase(p){
 }
 function flipTop(){
   if(G.deck.length === 0){
+    if(G.discard.length === 0){ console.error("[flipTop] 牌堆与弃牌堆均已空"); return null; }
     G.deck = shuffle(G.discard.splice(0));
     log("牌堆已空，弃牌堆重新洗入。");
   }
-  return G.deck.pop();
+  return G.deck.pop() || null;
 }
 
 /* ---------- 出牌阶段 ---------- */
@@ -380,6 +384,13 @@ async function discardPhase(p){
 async function performCard(p, card, use){
   const key = use.key;
   const isVirtualSha = key === "sha" && card.key !== "sha";
+  // 抓取起飞点：人类玩家从那张手牌的位置起飞，AI 从其人物座位起飞
+  let launchPoint = null;
+  if(p.human || p.pid === G.me.pid){
+    const cardEl = document.querySelector(`.hcard[data-cid="${card.id}"]`);
+    if(cardEl) launchPoint = FX.centerOf(cardEl);
+  }
+  if(!launchPoint) launchPoint = FX.centerOf(UI.seatElOf(p));
   const zoneIdx = p.hand.indexOf(card);
   if(zoneIdx >= 0) p.hand.splice(zoneIdx, 1);
   UI.renderAll();
@@ -388,7 +399,7 @@ async function performCard(p, card, use){
     log(`<b>${p.name}</b> 使用 <b>${isVirtualSha ? "杀（" + card.name + "）" : "【" + card.name + "】"}` +
         (use.target && use.target.pid !== p.pid ? ` → <b>${use.target.name}</b>` : "") + `</b>`);
     const fromEl = UI.seatElOf(p);
-    await FX.flyCard(card, p.human ? (document.querySelector(`.hcard[data-cid="${card.id}"]`) || fromEl) : fromEl, $("#center-stage"), { toScale: 1.3 });
+    await FX.flyCard(card, fromEl, $("#center-stage"), { fromPoint: launchPoint, toScale: 1.45 });
     SFX.trick();
     const toTxt = use.target && use.target.pid !== p.pid ? `，直指 ${use.target.name}` : "";
     FX.comment(`${p.name} 打出【${card.name}】${toTxt}`);
@@ -471,11 +482,22 @@ async function performCard(p, card, use){
         if(await askWuxieChain(card.name, p, t, true)) continue;
         if(key === "nanman"){
           const sha = await askForCard(t, c => canUseAsSha(t, c), 1, `<b>${p.name}</b> 发动【南蛮入侵】— 请打出一张【杀】，否则受 1 点伤害（${t.name}）`, true, { scene:"nanman" });
-          if(sha){ FX.word("杀", "#e0665c", true); toDiscard(sha); SFX.sha(); await DLY(350); }
+          if(sha){
+            FX.word("杀", "#e0665c", true);
+            await FX.flyCard(sha, UI.seatElOf(t), $("#center-stage"), { toScale: 1.1 });
+            toDiscard(sha); SFX.sha();
+            await DLY(350);
+          }
           else await dealDamage(t, 1, p, null, { trick: card.name });
         } else {
           const shan = await askForCard(t, c => canUseAsShan(t, c), 1, `<b>${p.name}</b> 发动【万箭齐发】— 请打出一张【闪】，否则受 1 点伤害（${t.name}）`, true, { scene:"wanjian" });
-          if(shan){ FX.shieldAt(UI.seatElOf(t)); FX.word("闪", "#7fd4ff", true); toDiscard(shan); SFX.shan(); await DLY(350); }
+          if(shan){
+            FX.shieldAt(UI.seatElOf(t));
+            FX.word("闪", "#7fd4ff", true);
+            await FX.flyCard(shan, UI.seatElOf(t), $("#center-stage"), { toScale: 1.1 });
+            toDiscard(shan); SFX.shan();
+            await DLY(350);
+          }
           else await dealDamage(t, 1, p, null, { trick: card.name });
         }
         if(G.over) break;
@@ -499,28 +521,34 @@ async function performCard(p, card, use){
       if(await askWuxieChain("五谷丰登", p, null)) { toDiscard(card); break; }
       G._wuguInProgress = true; // 亮出的牌暂离各区域，测试审计跳过此过程
       const shown = [];
-      for(let i = 0; i < G.players.filter(x => !x.dead).length; i++) shown.push(flipTop());
-      let cur = p;
-      do {
-        if(!cur.dead){
-          let pick;
-          if(cur.human){
-            pick = await new Promise(res => UI.modal({
-              title:"五谷丰登", desc:"选择一张牌收入手中：", cards:shown,
-              onPick:(c) => res(c),
-            }));
-          } else {
-            pick = AI.wuguPick(cur, shown);
-            await DLY(400);
+      for(let i = 0; i < G.players.filter(x => !x.dead).length; i++){
+        const c = flipTop();
+        if(c) shown.push(c);
+      }
+      if(shown.length){
+        let cur = p;
+        do {
+          if(!cur.dead && shown.length){
+            let pick;
+            if(cur.human){
+              pick = await new Promise(res => UI.modal({
+                title:"五谷丰登", desc:"选择一张牌收入手中：", cards:shown,
+                onPick:(c) => res(c),
+              }));
+            } else {
+              pick = AI.wuguPick(cur, shown);
+              await DLY(400);
+            }
+            if(!pick) break;
+            shown.splice(shown.indexOf(pick), 1);
+            cur.hand.push(pick);
+            log(`<b>${cur.name}</b> 选择了【${pick.name}】。`);
+            await FX.flyCard(pick, $("#center-stage"), UI.seatElOf(cur));
+            UI.renderAll();
           }
-          shown.splice(shown.indexOf(pick), 1);
-          cur.hand.push(pick);
-          log(`<b>${cur.name}</b> 选择了【${pick.name}】。`);
-          await FX.flyCard(pick, $("#center-stage"), UI.seatElOf(cur));
-          UI.renderAll();
-        }
-        cur = nextAlive(cur);
-      } while(cur.pid !== p.pid && shown.length);
+          cur = nextAlive(cur);
+        } while(cur.pid !== p.pid && shown.length);
+      }
       for(const c of shown) toDiscard(c);
       G._wuguInProgress = false;
       toDiscard(card);
@@ -580,6 +608,7 @@ async function resolveSha(src, target, card, isVirtual){
     FX.word("闪！", "#7fd4ff", true);
     FX.comment(`🛡 ${target.name} 打出【${shan.name}】，闪过一劫！`);
     Rec.event("reply", { card: { ...shan }, src: target.name, for: "闪" });
+    await FX.flyCard(shan, UI.seatElOf(target), $("#center-stage"), { toScale: 1.1 });
     toDiscard(shan);
     SFX.shan();
     UI.renderAll();
@@ -658,6 +687,7 @@ async function resolveDuel(src, target, card){
       const sha = await askForCard(cur, c => canUseAsSha(cur, c), 1, `与 <b>${other.name}</b> 决斗中 — 请打出一张【杀】，否则受 1 点伤害（${cur.name}）`, true, { scene:"juedou" });
       if(!sha){ played = false; break; }
       FX.word("杀", "#e0665c", true);
+      await FX.flyCard(sha, UI.seatElOf(cur), $("#center-stage"), { toScale: 1.1 });
       toDiscard(sha); SFX.sha();
       UI.renderAll();
       await DLY(400);

@@ -26,7 +26,8 @@ const FX = (() => {
   function flyCard(card, fromEl, toEl, opt = {}){
     if(NOFX()) return Promise.resolve();
     return new Promise(resolve => {
-      const from = centerOf(fromEl), to = centerOf(toEl);
+      // opt.fromPoint 优先：手牌结算时元素已重绘移除，需提前抓取坐标起飞
+      const from = opt.fromPoint || centerOf(fromEl), to = centerOf(toEl);
       const el = document.createElement("div");
       el.className = "fx-fly";
       el.innerHTML = cardHTML(card, opt.cls || "");
