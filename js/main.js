@@ -101,6 +101,7 @@ async function startGame(role){
 document.getElementById("btn-again").onclick = () => {
   G = null;
   document.getElementById("btn-ai").classList.remove("on");
+  refreshReplayLast();
   document.getElementById("log-list").innerHTML = "";
   document.title = "三国杀 · 群雄逐鹿";
   showScreen("screen-hero");
@@ -185,6 +186,20 @@ document.getElementById("btn-rules").onclick = () => {
   });
 };
 
+/* ---------- 回放入口 ---------- */
+document.getElementById("btn-replay").onclick = () => {
+  if(G && G.replayData) RP.open(G.replayData, { autoplay:true });
+};
+function refreshReplayLast(){
+  const saved = localStorage.getItem("sgk_replay_last");
+  document.getElementById("btn-replay-last").classList.toggle("hidden", !saved);
+}
+document.getElementById("btn-replay-last").onclick = () => {
+  const saved = localStorage.getItem("sgk_replay_last");
+  if(saved) RP.open(saved, { autoplay:true });
+};
+refreshReplayLast();
+
 /* ---------- 战绩统计（localStorage，隐私模式下静默失败） ---------- */
 function loadStats(){
   try{ return JSON.parse(localStorage.getItem("sgk_stats")) || { games:0, wins:0 }; }
@@ -195,6 +210,9 @@ function recordStats(win){
   s.games++; if(win) s.wins++;
   try{ localStorage.setItem("sgk_stats", JSON.stringify(s)); }catch(e){}
   renderStats();
+refreshReplayLast();
+
+/* ---------- 小屏适配：整体等比缩放 ---------- */
 }
 function renderStats(){
   const s = loadStats();
@@ -204,6 +222,9 @@ function renderStats(){
     : `乱世将启 · 静候新主`;
 }
 renderStats();
+refreshReplayLast();
+
+/* ---------- 小屏适配：整体等比缩放 ---------- */
 
 /* ---------- 小屏适配：整体等比缩放 ---------- */
 function fitScale(){

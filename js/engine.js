@@ -60,6 +60,7 @@ function newGame(cfg){
     humanDeadFast: false,
   };
   for(const p of G.players){ drawCardsRaw(p, 4); }
+  Rec.start(G.players);
   return G;
 }
 
@@ -230,6 +231,7 @@ async function runTurn(p){
   SFX.turn();
   log(`—— <b>${p.name}</b> 的回合 ——`);
   FX.comment(`⚔ 轮到 ${p.name} 行动`);
+  Rec.event("turn", { name: p.name });
   await DLY(p.human ? 200 : 700);
 
   // 判定阶段
@@ -269,6 +271,7 @@ async function judgePhase(p){
     const ok = isLe ? (card.suit !== "♥") : (card.suit === "♠");
     log(`<b>${p.name}</b> 对【${jc.name}】判定：<span class="${suitColor(card.suit)}">${card.suit}${card.num}</span> → ${ok ? "生效" : "失效"}`);
     FX.comment(`🎲 【${jc.name}】判定 ${card.suit}${card.num} — ${ok ? "生效！" : "失效"}`);
+    Rec.event("judge", { card: { ...card }, ok, by: p.name, for: jc.name });
     await showJudgment(card, `【${jc.name}】判定`);
     await DLY(300);
     toDiscard(card);
@@ -377,6 +380,7 @@ async function performCard(p, card, use){
     SFX.trick();
     const toTxt = use.target && use.target.pid !== p.pid ? `，直指 ${use.target.name}` : "";
     FX.comment(`${p.name} 打出【${card.name}】${toTxt}`);
+    Rec.event("play", { card: { ...card }, src: p.name, target: use.target && use.target.pid !== p.pid ? use.target.name : null, virtual: isVirtualSha });
     await showCenterCard(card, use.target && use.target.pid !== p.pid ? `${p.name} → ${use.target.name}` : `${p.name} 打出`);
   };
 
@@ -563,6 +567,7 @@ async function resolveSha(src, target, card, isVirtual){
     FX.shieldAt(UI.seatElOf(target));
     FX.word("闪！", "#7fd4ff", true);
     FX.comment(`🛡 ${target.name} 打出【${shan.name}】，闪过一劫！`);
+    Rec.event("reply", { card: { ...shan }, src: target.name, for: "闪" });
     toDiscard(shan);
     SFX.shan();
     UI.renderAll();
@@ -671,6 +676,7 @@ async function dealDamage(t, n, src, card, opt = {}){
   if(!t.human) setTimeout(() => el.classList.remove("hurt"), 520);
   log(`<span class="lg-red">💥 <b>${t.name}</b> 受到 ${n} 点${opt.electric ? "雷电" : opt.trick || ""}伤害${src && src.pid !== t.pid ? `（来自 <b>${src.name}</b>）` : ""}，剩余体力 ${Math.max(0, t.hp)}。</span>`);
   FX.comment(`💥 ${t.name} 中招！损失 ${n} 点${opt.electric ? "雷电" : ""}伤害（剩 ${Math.max(0, t.hp)}）`);
+  Rec.event("damage", { n, target: t.name, src: src ? src.name : null, hp: Math.max(0, t.hp), electric: !!opt.electric });
   if(src && src.pid !== t.pid){
     addGrudge(t, src, n * 2);
     // 打主公者，全场皆知其反贼相；斩杀反贼相者，彰显忠义
@@ -702,6 +708,7 @@ async function healHp(t, n, src){
   SFX.heal();
   log(`<b>${t.name}</b> 回复 ${t.hp - before} 点体力（${t.hp}/${t.maxHp}）。`, "lg-green");
   FX.comment(`💚 ${t.name} 回复 ${t.hp - before} 点体力（${t.hp}/${t.maxHp}）`);
+  Rec.event("heal", { n: t.hp - before, target: t.name });
   UI.renderAll();
   await DLY(500);
 }
@@ -710,6 +717,7 @@ async function healHp(t, n, src){
 async function dying(t){
   log(`⚠️ <b>${t.name}</b> 濒死！`, "lg-red");
   FX.comment(`⚠️ ${t.name} 命悬一线！`);
+  Rec.event("dying", { name: t.name });
   FX.flash("rgba(160,20,20,.35)", 500);
   let need = 1 - t.hp;
   let cur = t;
@@ -748,6 +756,7 @@ async function die(p, killer){
   FX.particles(UI.seatElOf(p), "💀", 4, { up: 60 });
   log(`☠️ <b>${p.name}</b> 阵亡！身份是 —— <b style="color:${ROLES[p.role].hex}">${ROLES[p.role].name}</b>`);
   FX.comment(`☠️ ${p.name} 倒下了！身份揭晓：${ROLES[p.role].name}`);
+  Rec.event("die", { name: p.name, role: p.role });
   UI.renderAll();
   await DLY(800);
   if(killer && !killer.dead){
@@ -788,6 +797,7 @@ async function askWuxieChain(trickName, source, target, depth = 0){
     UI.renderAll();
     log(`<b>${p.name}</b> 打出并弃置【无懈可击】${depth > 0 ? "，反制了这张【无懈可击】" : ""}！`);
     FX.comment(`🛡 ${p.name} 打出【无懈可击】${depth > 0 ? "反制！" : "，化解了【" + trickName + "】"}`);
+    Rec.event("reply", { src: p.name, for: "无懈可击", target: target ? target.name : null, counter: depth > 0 });
     await FX.flyCard(wx, UI.seatElOf(p), $("#center-stage"));
     FX.shieldAt($("#center-stage"));
     FX.word(depth > 0 ? "反制！" : "无懈可击", "#7fd4ff", true);
@@ -934,6 +944,7 @@ async function performSkill(p, act){
     UI.renderAll();
     FX.word("制衡", "#e8c832", true);
     FX.comment(`✨ ${p.name} 发动【制衡】，弃 ${act.cards.length} 张换 ${act.cards.length} 张`);
+    Rec.event("skill", { src: p.name, skill: "制衡" });
     log(`<b>${p.name}</b> 发动【制衡】，弃置 ${act.cards.length} 张牌。`);
     await DLY(400);
     await drawCards(p, act.cards.length);
@@ -946,6 +957,7 @@ async function performSkill(p, act){
     UI.renderAll();
     FX.word("仁德", "#7fb3e0", true);
     FX.comment(`✨ ${p.name} 发动【仁德】，赠 ${act.cards.length} 张牌于 ${t.name}`);
+    Rec.event("skill", { src: p.name, skill: "仁德", target: t.name });
     log(`<b>${p.name}</b> 发动【仁德】，将 ${act.cards.length} 张牌交给 <b>${t.name}</b>。`);
     await FX.flyCard(act.cards[0], UI.seatElOf(p), UI.seatElOf(t));
     if(act.cards.length >= 2) await healHp(p, 1, p);
@@ -958,6 +970,7 @@ async function performSkill(p, act){
     UI.renderAll();
     FX.word("离间", "#d4507f", true);
     FX.comment(`✨ ${p.name} 发动【离间】，${a.name} 与 ${b.name} 反目成仇！`);
+    Rec.event("skill", { src: p.name, skill: "离间", targets: [a.name, b.name] });
     log(`<b>${p.name}</b> 发动【离间】，弃置【${act.card.name}】，令 <b>${a.name}</b> 对 <b>${b.name}</b> 决斗！`);
     await DLY(500);
     if(await askWuxieChain("离间·决斗", p, b)) return;
@@ -1005,6 +1018,15 @@ function finishGame(winSide){
     </div>`).join("");
   if(myWin) SFX.win(); else SFX.lose();
   document.title = myWin ? "三国杀 · 胜利" : "三国杀 · 失败";
+  const replayData = Rec.finish(winSide);
+  if(replayData){
+    G.replayData = replayData;
+    try{ localStorage.setItem("sgk_replay_last", JSON.stringify(replayData)); }catch(e){ /* 超限则跳过持久化 */ }
+  }
+  // 自动化验证通道：?autotest=1&autoplay=1 结束后自动进入回放播放
+  if(G.autotest && replayData && location.search.includes("autoplay")){
+    setTimeout(() => RP.open(replayData, { autoplay:true }), 200);
+  }
   if(G.autotest) document.title = "AUTOTEST_DONE winner=" + winSide;
   else if(typeof recordStats === "function") recordStats(myWin);
   setTimeout(() => showScreen("screen-result"), G.fast ? 300 : 1600);

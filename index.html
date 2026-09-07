@@ -19,6 +19,7 @@
     谁是忠肝义胆，谁是笑里藏刀？<br>
     乱世之中，唯有刀剑与谋略，方能定鼎天下。</p>
     <button id="btn-start" class="btn-main">入　局</button>
+    <button id="btn-replay-last" class="btn-sm hidden">▶ 回放上一局</button>
     <div id="stats-line" class="stats-line">乱世将启 · 静候新主</div>
     <div class="title-suits">♠　♥　♣　♦</div>
   </div>
@@ -84,6 +85,15 @@
       <div id="log-list"></div>
     </aside>
     <div id="spectate-tip" class="hidden">👻 你已阵亡 · 观战中（AI 快速代打）</div>
+    <div id="replay-bar" class="hidden">
+      <button id="rp-prev" class="rp-btn" title="后退 10 步">⏪</button>
+      <button id="rp-play" class="rp-btn rp-main" title="播放/暂停">▶</button>
+      <button id="rp-next" class="rp-btn" title="前进 10 步">⏩</button>
+      <input type="range" id="rp-seek" min="0" max="0" value="0" step="1">
+      <span id="rp-pos">0 / 0</span>
+      <button id="rp-speed" class="rp-btn" title="播放速度">1x</button>
+      <button id="rp-exit" class="rp-btn" title="退出回放">✕</button>
+    </div>
   </div>
 </section>
 
@@ -93,6 +103,7 @@
     <div id="result-title"></div>
     <div id="result-sub"></div>
     <div id="result-roles"></div>
+    <button id="btn-replay" class="btn-main">▶ 观看本局回放</button>
     <button id="btn-again" class="btn-main">再 战 一 局</button>
   </div>
 </section>
@@ -102,10 +113,12 @@
 <div id="error-box" class="hidden"></div>
 
 <script src="js/data.js"></script>
+<script src="js/record.js"></script>
 <script src="js/fx.js"></script>
 <script src="js/ai.js"></script>
 <script src="js/ui.js"></script>
 <script src="js/engine.js"></script>
+<script src="js/replay.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>

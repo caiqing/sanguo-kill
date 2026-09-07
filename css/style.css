@@ -590,3 +590,20 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;}
 }
 #btn-ai.on::after{content:"代打";position:absolute;top:-16px;right:-6px;font-size:9px;
   color:var(--gold-l);letter-spacing:1px;}
+
+/* ============ 回放控制条 ============ */
+#replay-bar{
+  position:fixed;bottom:14px;left:50%;transform:translateX(-50%);z-index:970;
+  display:flex;align-items:center;gap:8px;padding:8px 16px;border-radius:28px;
+  background:rgba(10,8,5,.92);border:1px solid var(--gold);
+  box-shadow:0 6px 24px rgba(0,0,0,.7);
+}
+#replay-bar .rp-btn{
+  background:none;border:1px solid rgba(201,162,39,.5);color:var(--gold-l);
+  width:34px;height:34px;border-radius:50%;font-size:15px;line-height:1;transition:all .15s;
+}
+#replay-bar .rp-btn:hover{background:rgba(201,162,39,.2);transform:translateY(-1px);}
+#replay-bar .rp-main{width:42px;height:42px;font-size:18px;}
+#rp-seek{width:220px;accent-color:var(--gold);}
+#rp-pos{font-size:12px;color:#cbb98d;min-width:64px;text-align:center;}
+#screen-result .btn-main{margin:6px 8px;}

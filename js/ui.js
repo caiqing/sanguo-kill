@@ -192,6 +192,7 @@ const UI = (() => {
   function renderSkillBtns(){
     const box = $("skill-btns");
     box.innerHTML = "";
+    if(typeof RP !== "undefined" && RP.active) return;
     if(G.phase !== "play" || !G.me.alive || G.turnPlayer?.pid !== G.me.pid || S.mode === "respond") return;
     const p = G.me, h = p.hero.id;
     const mk = (label, cb, disabled) => {
@@ -227,6 +228,7 @@ const UI = (() => {
   }
 
   function onHandClick(card, el){
+    if(typeof RP !== "undefined" && RP.active) return;
     if(S.mode === "respond"){
       const valid = typeof S.respondSpec.cards === "function" ? S.respondSpec.cards() : S.respondSpec.cards;
       if(!valid.includes(card)) return;
@@ -280,6 +282,7 @@ const UI = (() => {
   }
 
   function onSeatClick(p, el){
+    if(typeof RP !== "undefined" && RP.active) return;
     if(S.mode !== "selectTarget") return;
     const valid = S.pendingUse?.targets || S.validTargets;
     if(!valid?.has(p.pid)) return;
@@ -435,5 +438,7 @@ const UI = (() => {
 })();
 
 function log(html, cls){
-  UI.logLine(cls ? `<span class="${cls}">${html}</span>` : html);
+  const full = cls ? `<span class="${cls}">${html}</span>` : html;
+  UI.logLine(full);
+  if(typeof Rec !== "undefined") Rec.note(full);
 }

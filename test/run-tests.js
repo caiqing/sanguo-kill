@@ -70,8 +70,18 @@ const SFX = new Proxy({}, { get: () => () => {} });
 Object.defineProperty(SFX, "muted", { get(){ return true; } });
 `;
 
+// 录制器 stub：统计事件数用于录像完整性断言
+const RecStub = `
+const Rec = {
+  active: false, events: [], meta: null, lastLog: "", lastLogHtml: "",
+  start(players){ this.active = true; this.events = [{ t: "init", d: {}, text: "", html: "", snap: null }]; },
+  note(){},
+  event(type, data){ if(this.active) this.events.push({ t: type, d: data || {}, text: "", html: "", snap: null }); },
+  finish(winSide){ this.active = false; return { events: this.events, meta: { winSide } }; },
+};
+`;
 const files = ["js/data.js", "js/ai.js", "js/engine.js"];
-let code = uiStub + fxStub;
+let code = uiStub + fxStub + RecStub;
 // 种子化随机数：同一 seed 完整复现同一局
 code += `
 let __rng = Math.random;
@@ -250,11 +260,12 @@ function totalCardsInWorld(g){
       break;
     }
     const total = totalCardsInWorld(g);
-    const ok = g.over && g.winSide && total === g._total;
+    const replayN = Rec.events.length;
+    const ok = g.over && g.winSide && total === g._total && replayN > 10;
     if(ok){
       pass++;
       wins[g.winSide] = (wins[g.winSide] || 0) + 1;
-      process.stdout.write(`✓ 局 ${i + 1}: ${g.winSide} 胜，${g.round} 轮，牌数守恒 ${total}/${g._total}，日志 ${global.testLogs.length} 条\n`);
+      process.stdout.write(`✓ 局 ${i + 1}: ${g.winSide} 胜，${g.round} 轮，牌数守恒 ${total}/${g._total}，录像 ${replayN} 事件\n`);
     } else {
       fail++;
       console.log(`\n✗ 局 ${i + 1}: over=${g.over} winSide=${g.winSide} 牌数 ${total}/${g._total}（期望 ${g._total}）`);
