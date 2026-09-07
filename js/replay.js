@@ -86,19 +86,28 @@ const RP = {
     G = this.fakeG;
     UI.renderAll(true);
 
-    // 事件视觉
+    // 事件视觉：展示卡锚定到当事人座位位置
     const zone = document.getElementById("play-zone");
-    if(zone && (ev.t === "play" || ev.t === "judge" || ev.t === "reply") && ev.d.card){
-      zone.innerHTML = "";
-      const wrap = document.createElement("div");
-      wrap.className = "played-card center-show judgment-show";
+    if(zone && ev.t === "init"){ zone.innerHTML = ""; }
+    if((ev.t === "play" || ev.t === "judge" || ev.t === "reply") && ev.d.card){
+      const srcName = ev.d.src || ev.d.by;
+      const srcP = this.fakeG.players.find(x => x.name === srcName);
+      const anchor = srcP ? UI.seatElOf(srcP) : document.getElementById("center-stage");
+      const stage = document.getElementById("center-stage");
+      const a = anchor || stage;
+      const ar = a.getBoundingClientRect();
+      const sr = stage.getBoundingClientRect();
+      const w = 168, h = 233;
+      let x = ar.left + ar.width / 2 - w / 2;
+      x = Math.max(sr.left + 8, Math.min(sr.right - w - 8, x));
+      const y = Math.max(sr.top + 8, sr.top + sr.height / 2 - h / 2);
       const label = ev.t === "play"
         ? `${ev.d.src}${ev.d.target ? " → " + ev.d.target : ""} 打出`
         : ev.t === "judge" ? `${ev.d.by} 判定` : `${ev.d.src} 打出`;
+      let wrap = zone.querySelector(".center-show");
+      if(!wrap){ wrap = document.createElement("div"); wrap.className = "played-card center-show judgment-show"; wrap.style.cssText = `position:fixed;z-index:5;`; zone.appendChild(wrap); }
+      wrap.style.cssText = `position:fixed;left:${x}px;top:${y}px;width:${w}px;height:${h}px;z-index:5;`;
       wrap.innerHTML = cardFaceHTML(ev.d.card) + `<div class="played-label">${label}</div>`;
-      zone.appendChild(wrap);
-    } else if(zone && ev.t === "init"){
-      zone.innerHTML = "";
     }
 
     // 每事件特效与音效

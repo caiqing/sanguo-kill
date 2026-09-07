@@ -22,6 +22,7 @@ function makeEl(){
   };
 }
 global.document = {
+  body: makeEl(),
   getElementById(){ return makeEl(); },
   querySelector(){ return makeEl(); },
   querySelectorAll(){ return []; },
