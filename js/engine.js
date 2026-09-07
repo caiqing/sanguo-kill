@@ -400,12 +400,13 @@ async function performCard(p, card, use){
         (use.target && use.target.pid !== p.pid ? ` → <b>${use.target.name}</b>` : "") + `</b>`);
     const fromEl = UI.seatElOf(p);
     const hasTarget = use.target && use.target.pid !== p.pid;
-    const showEl = showCenterCardEl(card, hasTarget ? `${p.name} → ${use.target.name}` : `${p.name} 打出`, fromEl);
-    await FX.flyCard(card, fromEl, showEl || $("#center-stage"), { fromPoint: launchPoint, toScale: 1.5 });
+    const showPos = centerCardPos(fromEl);
+    await FX.flyCard(card, fromEl, null, { fromPoint: launchPoint, toPoint: showPos, toScale: 1.5 });
     SFX.trick();
     const toTxt = hasTarget ? `，直指 ${use.target.name}` : "";
     FX.comment(`${p.name} 打出【${card.name}】${toTxt}`);
     Rec.event("play", { card: { ...card }, src: p.name, target: hasTarget ? use.target.name : null, virtual: isVirtualSha });
+    const showEl = showCenterCardAt(card, hasTarget ? `${p.name} → ${use.target.name}` : `${p.name} 打出`, showPos);
     await DLY(1200);
     if(showEl) showEl.remove();
   };
@@ -487,8 +488,9 @@ async function performCard(p, card, use){
           const sha = await askForCard(t, c => canUseAsSha(t, c), 1, `<b>${p.name}</b> 发动【南蛮入侵】— 请打出一张【杀】，否则受 1 点伤害（${t.name}）`, true, { scene:"nanman" });
           if(sha){
             FX.word("杀", "#e0665c", true);
-            const respEl = showCenterCardEl(sha, `${t.name} 打出`, UI.seatElOf(t));
-            await FX.flyCard(sha, UI.seatElOf(t), respEl || $("#center-stage"), { toScale: 1.1 });
+            const respPos = centerCardPos(UI.seatElOf(t));
+            await FX.flyCard(sha, UI.seatElOf(t), null, { toPoint: respPos, toScale: 1.1 });
+            const respEl = showCenterCardAt(sha, `${t.name} 打出`, respPos);
             await DLY(450);
             if(respEl) respEl.remove();
             toDiscard(sha); SFX.sha();
@@ -499,8 +501,9 @@ async function performCard(p, card, use){
           if(shan){
             FX.shieldAt(UI.seatElOf(t));
             FX.word("闪", "#7fd4ff", true);
-            const respEl = showCenterCardEl(shan, `${t.name} 打出`, UI.seatElOf(t));
-            await FX.flyCard(shan, UI.seatElOf(t), respEl || $("#center-stage"), { toScale: 1.1 });
+            const respPos = centerCardPos(UI.seatElOf(t));
+            await FX.flyCard(shan, UI.seatElOf(t), null, { toPoint: respPos, toScale: 1.1 });
+            const respEl = showCenterCardAt(shan, `${t.name} 打出`, respPos);
             await DLY(450);
             if(respEl) respEl.remove();
             toDiscard(shan); SFX.shan();
@@ -615,8 +618,9 @@ async function resolveSha(src, target, card, isVirtual){
     FX.word("闪！", "#7fd4ff", true);
     FX.comment(`🛡 ${target.name} 打出【${shan.name}】，闪过一劫！`);
     Rec.event("reply", { card: { ...shan }, src: target.name, for: "闪" });
-    const shanEl = showCenterCardEl(shan, `${target.name} 打出`, UI.seatElOf(target));
-    await FX.flyCard(shan, UI.seatElOf(target), shanEl || $("#center-stage"), { toScale: 1.1 });
+    const shanPos = centerCardPos(UI.seatElOf(target));
+    await FX.flyCard(shan, UI.seatElOf(target), null, { toPoint: shanPos, toScale: 1.1 });
+    const shanEl = showCenterCardAt(shan, `${target.name} 打出`, shanPos);
     await DLY(700);
     if(shanEl) shanEl.remove();
     toDiscard(shan);
@@ -697,8 +701,9 @@ async function resolveDuel(src, target, card){
       const sha = await askForCard(cur, c => canUseAsSha(cur, c), 1, `与 <b>${other.name}</b> 决斗中 — 请打出一张【杀】，否则受 1 点伤害（${cur.name}）`, true, { scene:"juedou" });
       if(!sha){ played = false; break; }
       FX.word("杀", "#e0665c", true);
-      const duelEl = showCenterCardEl(sha, `${cur.name} 打出`, UI.seatElOf(cur));
-      await FX.flyCard(sha, UI.seatElOf(cur), duelEl || $("#center-stage"), { toScale: 1.1 });
+      const duelPos = centerCardPos(UI.seatElOf(cur));
+      await FX.flyCard(sha, UI.seatElOf(cur), null, { toPoint: duelPos, toScale: 1.1 });
+      const duelEl = showCenterCardAt(sha, `${cur.name} 打出`, duelPos);
       await DLY(550);
       if(duelEl) duelEl.remove();
       toDiscard(sha); SFX.sha();
@@ -889,10 +894,10 @@ async function chooseRemoval(src, t, isShun){
 }
 
 /* ================= 询问系统 ================= */
-/* 卡牌放大展示：位置锚定到出牌人/响应者（水平跟随其座位，垂直居舞台中） */
-function showCenterCardEl(card, label = "", anchorEl = null){
+/* 展示位计算：锚定出牌人/响应者（水平跟随其座位，垂直居舞台中，边界钳制） */
+function centerCardPos(anchorEl){
   const stage = document.getElementById("center-stage");
-  if(!stage) return null;
+  if(!stage) return { x: innerWidth / 2 - 84, y: innerHeight / 2 - 116 };
   const a = anchorEl || stage;
   const ar = a.getBoundingClientRect();
   const sr = stage.getBoundingClientRect();
@@ -900,16 +905,19 @@ function showCenterCardEl(card, label = "", anchorEl = null){
   let x = ar.left + ar.width / 2 - w / 2;
   x = Math.max(sr.left + 8, Math.min(sr.right - w - 8, x));
   const y = Math.max(sr.top + 8, sr.top + sr.height / 2 - h / 2);
+  return { x, y };
+}
+function showCenterCardAt(card, label, pos){
   const wrap = document.createElement("div");
   wrap.className = "played-card center-show judgment-show";
-  wrap.style.cssText = `position:fixed;left:${x}px;top:${y}px;width:${w}px;height:${h}px;z-index:5;`;
+  wrap.style.cssText = `position:fixed;left:${pos.x}px;top:${pos.y}px;width:168px;height:233px;z-index:5;`;
   wrap.innerHTML = cardFaceHTML(card) + (label ? `<div class="played-label">${label}</div>` : "");
   document.body.appendChild(wrap);
   return wrap;
 }
 async function showCenterCard(card, label = "", holdMs = 1300, anchorEl = null){
-  const wrap = showCenterCardEl(card, label, anchorEl);
-  if(!wrap) return;
+  const pos = centerCardPos(anchorEl);
+  const wrap = showCenterCardAt(card, label, pos);
   await DLY(holdMs);
   wrap.remove();
 }
