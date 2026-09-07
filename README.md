@@ -101,3 +101,7 @@ sanguo-kill/
 │   └── main.js         # 入口：屏幕流转/选将/剧情/自动测试
 └── test/run-tests.js   # 无头逻辑回归测试
 ```
+
+## 许可证
+
+[Apache-2.0](LICENSE) © 2026 caiqing
